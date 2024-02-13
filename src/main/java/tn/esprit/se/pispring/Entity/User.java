@@ -1,10 +1,7 @@
 package tn.esprit.se.pispring.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -24,11 +21,9 @@ public class User {
     private String rating;
 
     @Enumerated(EnumType.STRING)
-    private TypeRole role;
+    private UserRole role;
 
     private Boolean connected = false;
-
-
 
 
 

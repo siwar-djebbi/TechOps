@@ -1,7 +1,8 @@
 package tn.esprit.se.pispring.Entity;
 
-public enum TypeRole {
+public enum UserRole {
     admin,
     USER,
     HR,
+
 }
