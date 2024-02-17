@@ -11,33 +11,20 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class User {
-
+public class Consultant {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
+    private Long idCon;
     private String FirtName ;
     private String LastName ;
     private String Email;
     private String password;
+    private String adress;
     private int telephone;
 
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
+    @ManyToMany(mappedBy="consultants", cascade = CascadeType.ALL)
+    private Set<PorteFeuille> portefeuilles;
 
-    private Boolean connected = false;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
-    private Set<Recrutement> Recrutements;
-
-    @OneToOne
-    private EmployeeDetaile employeedetaile;
-
-    @ManyToOne
-    Leave leave;
-
-    @OneToOne
-    private PorteFeuille portefeuille;
 
 }
-
