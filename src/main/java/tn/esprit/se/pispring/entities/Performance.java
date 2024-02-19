@@ -1,10 +1,10 @@
-package tn.esprit.se.pispring.Entity;
+package tn.esprit.se.pispring.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
-
+@Builder
 @Getter
 @Setter
 @ToString
@@ -14,15 +14,12 @@ import java.util.Date;
 public class Performance {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private long idPerf;
-    private String Salary ;
-    private Date DateEvaluation ;
-    private String Comment ;
-    private int Score ;
+    private Long performance_id;
 
+    @Temporal(TemporalType.DATE)
+    private Date evaluation_date;
+    private String comment;
+    private Integer score;
     @ManyToOne
-    EmployeeDetaile employeedetaile;
-
-    @ManyToOne
-    Paie paie;
+    User user;
 }
