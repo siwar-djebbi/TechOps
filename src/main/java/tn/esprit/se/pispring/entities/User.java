@@ -22,6 +22,7 @@ public class User {
     private String email;
     private String password;
     private Integer telephone;
+    private boolean accountNonLocked = true;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
