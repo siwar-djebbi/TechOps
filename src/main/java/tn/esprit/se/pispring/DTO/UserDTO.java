@@ -1,7 +1,7 @@
 package tn.esprit.se.pispring.DTO;
 
 import lombok.Data;
-import tn.esprit.se.pispring.Entity.TypeRole;
+import tn.esprit.se.pispring.entities.UserRole;
 
 @Data
 public class UserDTO {
@@ -12,12 +12,12 @@ public class UserDTO {
     private String password ;
     private int telephone ;
     private String rating;
-    private TypeRole role;
+    private UserRole role;
 
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String nom, String email, String password, int telephone, String rating, TypeRole role) {
+    public UserDTO(Long id, String nom, String email, String password, int telephone, String rating, UserRole role) {
         this.id = id;
         this.nom = nom;
         this.email = email;
@@ -75,11 +75,11 @@ public class UserDTO {
         this.rating = rating;
     }
 
-    public TypeRole getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(TypeRole role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 }

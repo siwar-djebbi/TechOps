@@ -2,17 +2,18 @@ package tn.esprit.se.pispring.Repository;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import tn.esprit.se.pispring.Entity.User;
+import org.springframework.stereotype.Repository;
+import tn.esprit.se.pispring.entities.User;
 
 import java.util.Optional;
-
+@Repository
 public interface UserRepository extends JpaRepository<User,Long> {
 
     Optional<User> findOneByEmailAndPassword(String email, String password);
     User findByEmail(String email);
 
-    User findByNom(String username);
+    User findByFirstName(String username);
 
     @Transactional
-    Long deleteByNom(String username);
+    Long deleteByFirstName(String username);
 }

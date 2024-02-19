@@ -2,7 +2,7 @@ package tn.esprit.se.pispring.Service;
 
 import tn.esprit.se.pispring.DTO.LoginDTO;
 import tn.esprit.se.pispring.DTO.UserDTO;
-import tn.esprit.se.pispring.Entity.User;
+import tn.esprit.se.pispring.entities.User;
 
 import java.util.List;
 
