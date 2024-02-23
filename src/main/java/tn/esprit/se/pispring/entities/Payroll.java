@@ -27,7 +27,7 @@ public class Payroll {
     private String bank_name;
     private Long account_number;
     @Enumerated(EnumType.STRING)
-    private PaymentMehod payment_method;
+    private PaymentMethod payment_method;
     @ManyToOne
     User user;
 

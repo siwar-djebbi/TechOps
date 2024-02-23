@@ -21,6 +21,6 @@ public class Consultant {
     private String consultant_address;
     private String consultant_email;
     private Long consultant_phonenumber;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="consultant")
-    private Set<Portfolio> Portfolios;
+    @OneToOne
+    private Portfolio portfolio;
 }

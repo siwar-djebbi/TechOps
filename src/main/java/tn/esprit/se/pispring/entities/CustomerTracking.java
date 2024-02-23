@@ -20,5 +20,6 @@ public class CustomerTracking {
     @Temporal(TemporalType.DATE)
     private Date meet_date;
     @OneToOne(mappedBy="customertracking")
-    private Portfolio portfolio;
+    private User user;
+
 }

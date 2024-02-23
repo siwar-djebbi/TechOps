@@ -19,12 +19,12 @@ public class Portfolio {
     private String potfolio_name;
     private String potfolio_manager;
     private String potfolio_description;
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Set<User> users;
-    @ManyToOne
-    Consultant consultant;
-    @OneToOne
-    private CustomerTracking customertracking;
+
+    @OneToOne(mappedBy="portfolio")
+    private Consultant consultant;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="portfolio")
+    private Set<User> Users;
 
 
 
