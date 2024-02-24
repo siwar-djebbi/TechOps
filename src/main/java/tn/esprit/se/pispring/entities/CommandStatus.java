@@ -1,6 +1,6 @@
 package tn.esprit.se.pispring.entities;
 
-public enum InvoiceStatus {
+public enum CommandStatus {
     PAID,
     UNPAID,
     PENDING

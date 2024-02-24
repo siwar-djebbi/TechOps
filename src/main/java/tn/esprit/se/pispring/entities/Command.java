@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import tn.esprit.se.pispring.entities.Cart;
 
 @Builder
 @Getter
@@ -12,16 +13,20 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Invoice {
+public class Command {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long invoice_id;
+    private Long commandId;
     @Temporal(TemporalType.DATE)
-    private Date emission_date;
-    private Float invoice_amount;
+    private Date dateCommand;
     @Enumerated(EnumType.STRING)
-    private InvoiceStatus invoiceStatus;
-    @OneToOne(mappedBy="invoice")
+    private CommandStatus commandStatus;
+
+    @Enumerated(EnumType.STRING)
+    private CommandPayment commandPayment;
+    @ManyToOne
+    User user;
+    @OneToOne(mappedBy="command")
     private Cart cart;
 
 }
