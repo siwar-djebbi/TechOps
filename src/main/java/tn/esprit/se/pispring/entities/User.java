@@ -44,7 +44,7 @@ public class User {
     private Set<Contribution> Contributions;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
-    private Set<Leave> Leaves;
+    private Set<Leav> Leaves;
 
     //@ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
    // private Set<Portfolio> portfolios;

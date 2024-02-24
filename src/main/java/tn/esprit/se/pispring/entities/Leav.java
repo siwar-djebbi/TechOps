@@ -12,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Leave {
+public class Leav {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long leaveId;
@@ -32,7 +32,8 @@ public class Leave {
     private String reason;
 
     private boolean leaveApproved;
-
+    
+    @Temporal(TemporalType.DATE)
     private Date requestDate;
 
     private String leaveApproverName;
