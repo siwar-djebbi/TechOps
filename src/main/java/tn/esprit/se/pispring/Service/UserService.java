@@ -5,7 +5,10 @@ import tn.esprit.se.pispring.DTO.Request.CurrentUserRequest;
 import tn.esprit.se.pispring.DTO.Request.EditPasswordRequest;
 import tn.esprit.se.pispring.DTO.Request.UserSignupRequest;
 import tn.esprit.se.pispring.DTO.Response.CurrentUserResponse;
+import tn.esprit.se.pispring.DTO.Response.UserResponse;
 import tn.esprit.se.pispring.entities.User;
+
+import java.util.List;
 
 public interface UserService {
 
@@ -19,4 +22,6 @@ public interface UserService {
     CurrentUserResponse editCurrentUserInfos(String token, CurrentUserRequest request)throws Exception;
 
     String editPassword(String token, EditPasswordRequest request)throws Exception;
+
+    List<UserResponse> getUsers(String token)throws Exception;
 }

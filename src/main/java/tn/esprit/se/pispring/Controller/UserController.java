@@ -3,11 +3,15 @@ package tn.esprit.se.pispring.Controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.se.pispring.DTO.Request.CurrentUserRequest;
 import tn.esprit.se.pispring.DTO.Request.EditPasswordRequest;
 import tn.esprit.se.pispring.DTO.Response.CurrentUserResponse;
+import tn.esprit.se.pispring.DTO.Response.UserResponse;
 import tn.esprit.se.pispring.Service.UserService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -45,6 +49,18 @@ public class UserController {
         }catch (Exception e) {
             throw new Exception(e);
         }
+    }
+
+    @GetMapping("/all")
+    //@PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_STAFF')")
+    public ResponseEntity<?> getUsers(@RequestHeader(name = "Authorization") String token) throws Exception {
+        try {
+            List<UserResponse> users = userService.getUsers(token);
+            return ResponseEntity.ok(users);
+        }catch (Exception e) {
+            throw new Exception(e);
+        }
+
     }
 
 

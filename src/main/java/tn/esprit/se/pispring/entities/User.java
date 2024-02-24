@@ -33,6 +33,8 @@ public class User {
     private List<Role> roles = new ArrayList<>();
 
     private Boolean connected = false;
+    private boolean deleted = false;
+
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     private Set<Recruitment> Recruitments;

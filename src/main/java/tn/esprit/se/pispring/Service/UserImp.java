@@ -7,9 +7,11 @@ import tn.esprit.se.pispring.DTO.Request.CurrentUserRequest;
 import tn.esprit.se.pispring.DTO.Request.EditPasswordRequest;
 import tn.esprit.se.pispring.DTO.Request.UserSignupRequest;
 import tn.esprit.se.pispring.DTO.Response.CurrentUserResponse;
+import tn.esprit.se.pispring.DTO.Response.UserResponse;
 import tn.esprit.se.pispring.Repository.RoleRepo;
 import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.entities.ERole;
+import tn.esprit.se.pispring.entities.Portfolio;
 import tn.esprit.se.pispring.entities.Role;
 import tn.esprit.se.pispring.entities.User;
 import tn.esprit.se.pispring.secConfig.JwtUtils;
@@ -17,6 +19,7 @@ import tn.esprit.se.pispring.secConfig.JwtUtils;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -103,6 +106,23 @@ public class UserImp implements UserService {
             user.setPassword(passwordEncoder.encode(request.getNewPassword()));
             userRepository.save(user);
             return "success";
+        }catch (Exception e) {
+            throw new Exception(e);
+        }
+    }
+
+    @Override
+    public List<UserResponse> getUsers(String token) throws Exception {
+        try {
+
+            return userRepository.findUsers((Portfolio) userRepository.
+                   findByEmail(jwtUtils.getUsernameFromToken(token.split(" ")[1].trim())).
+                   getPortfolios()).stream().filter(User -> !User.getRoles().
+                   contains(roleRepo.findRoleByRoleName(ERole.ROLE_ADMIN)))
+                   .map(User -> new UserResponse(
+                   ))
+                    .collect(Collectors.toList());
+
         }catch (Exception e) {
             throw new Exception(e);
         }
