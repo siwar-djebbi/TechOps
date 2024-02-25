@@ -1,6 +1,6 @@
 package tn.esprit.se.pispring.entities;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 import java.util.Date;
@@ -32,7 +32,7 @@ public class Leav {
     private String reason;
 
     private boolean leaveApproved;
-    
+
     @Temporal(TemporalType.DATE)
     private Date requestDate;
 

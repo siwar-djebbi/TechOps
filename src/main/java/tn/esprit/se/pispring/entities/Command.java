@@ -1,8 +1,9 @@
 package tn.esprit.se.pispring.entities;
 
-import jakarta.persistence.*;
 import lombok.*;
 
+import javax.persistence.*;
+import javax.persistence.Id;
 import java.util.Date;
 import tn.esprit.se.pispring.entities.Cart;
 

@@ -1,8 +1,7 @@
 package tn.esprit.se.pispring.entities;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
-
 import java.util.Date;
 
 @Builder

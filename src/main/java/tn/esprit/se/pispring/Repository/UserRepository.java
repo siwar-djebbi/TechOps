@@ -1,10 +1,13 @@
 package tn.esprit.se.pispring.Repository;
 
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import tn.esprit.se.pispring.entities.Portfolio;
 import tn.esprit.se.pispring.entities.User;
 
+import java.util.List;
 import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User,Long> {
@@ -16,4 +19,10 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     @Transactional
     Long deleteByFirstName(String username);
+
+    @Query("select u from User u where u.portfolios = :portfolios and u.deleted = false")
+    List<User> findUsers(Portfolio portfolios);
+
+    @Query("select u from User u where (u.firstName like concat(:keyword, '%') or u.lastName like concat(:keyword, '%') or u.email like concat(:keyword, '%')) and u.portfolios = :portfolios and u.deleted = false")
+    List<User> searchUsers(String keyword, Portfolio portfolios);
 }

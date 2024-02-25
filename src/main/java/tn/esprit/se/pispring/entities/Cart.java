@@ -1,9 +1,8 @@
 package tn.esprit.se.pispring.entities;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
@@ -14,19 +13,22 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Cart implements Serializable {
+public class Cart {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long cartId;
+    private Long cart_id;
     @Temporal(TemporalType.DATE)
     private Date datelastitem;
-    private Float totalAmount;
-    private Float subTotal;
-    private Integer numberOfItems;
+    private Float cart_amount;
+    private Integer cart_items_number;
+    @Enumerated(EnumType.STRING)
+    private CartPayment cartPayment;
+    @ManyToOne
+    User user;
 
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Product> products;
+
     @OneToOne
     private Command command;
-
 }
