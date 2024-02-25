@@ -118,7 +118,7 @@ public class UserImp implements UserService {
 
             return userRepository.findUsers((Portfolio) userRepository.
                    findByEmail(jwtUtils.getUsernameFromToken(token.split(" ")[1].trim())).
-                   getPortfolios()).stream().filter(User -> !User.getRoles().
+                   getPortfolio()).stream().filter(User -> !User.getRoles().
                    contains(roleRepo.findRoleByRoleName(ERole.ROLE_ADMIN)))
                    .map(User -> new UserResponse(
                    ))
@@ -133,7 +133,7 @@ public class UserImp implements UserService {
     public List<UserResponse> searchUsers(String token, SearchRequest searchRequest) throws Exception {
         try {
             return userRepository.searchUsers(searchRequest.getKeyword(), (Portfolio) userRepository
-                   .findByEmail(jwtUtils.getUsernameFromToken(token.split(" ")[1].trim())).getPortfolios())
+                   .findByEmail(jwtUtils.getUsernameFromToken(token.split(" ")[1].trim())).getPortfolio())
                    .stream().filter(appUser -> !appUser.getRoles().contains(roleRepo
                    .findRoleByRoleName(ERole.ROLE_ADMIN))).map(appUser -> new UserResponse(
                     )).collect(Collectors.toList());
