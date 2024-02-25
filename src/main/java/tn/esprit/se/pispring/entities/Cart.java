@@ -29,4 +29,6 @@ public class Cart {
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Product> products;
 
+    @OneToOne
+    private Command command;
 }
