@@ -3,6 +3,7 @@ package tn.esprit.se.pispring.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
 import java.util.Set;
 
 @Builder
@@ -17,6 +18,9 @@ public class Portfolio {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long potfolio_id;
     private String potfolio_name;
+    private String client_name;
+    @Temporal(TemporalType.DATE)
+    private Date creation_date;
     private String potfolio_manager;
     private String potfolio_description;
 

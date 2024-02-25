@@ -19,6 +19,12 @@ public class CustomerTracking {
     private String history_description;
     @Temporal(TemporalType.DATE)
     private Date meet_date;
+    private String meet_duration ;
+    private String meet_subject ;
+    private String meet_participant ;
+    private String meet_objective ;
+    private String next_step ;
+
     @OneToOne(mappedBy="customertracking")
     private User user;
 
