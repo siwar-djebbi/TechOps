@@ -44,14 +44,23 @@ public class User {
     private Set<Contribution> Contributions;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
-    private Set<Leave> Leaves;
+    private Set<Leav> Leaves;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
-    private Set<Cart> Carts;
-
-    @ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
-    private Set<Portfolio> portfolios;
+    //@ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
+   // private Set<Portfolio> portfolios;
 
     @ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
     private Set<Task> tasks;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
+    private Set<Command> Commands;
+
+    //@OneToOne(mappedBy="portfolio")
+    //private Consultant consultant;
+
+    @ManyToOne
+    Portfolio portfolio;
+
+    @OneToOne
+    private CustomerTracking customertracking;
 }
