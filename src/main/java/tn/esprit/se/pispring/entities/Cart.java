@@ -21,8 +21,7 @@ public class Cart {
     private Date datelastitem;
     private Float cart_amount;
     private Integer cart_items_number;
-    @Enumerated(EnumType.STRING)
-    private CartPayment cartPayment;
+
     @ManyToOne
     User user;
 
