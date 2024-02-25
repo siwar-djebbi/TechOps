@@ -3,6 +3,7 @@ package tn.esprit.se.pispring.Service;
 import org.springframework.stereotype.Service;
 import tn.esprit.se.pispring.DTO.Request.CurrentUserRequest;
 import tn.esprit.se.pispring.DTO.Request.EditPasswordRequest;
+import tn.esprit.se.pispring.DTO.Request.SearchRequest;
 import tn.esprit.se.pispring.DTO.Request.UserSignupRequest;
 import tn.esprit.se.pispring.DTO.Response.CurrentUserResponse;
 import tn.esprit.se.pispring.DTO.Response.UserResponse;
@@ -24,4 +25,6 @@ public interface UserService {
     String editPassword(String token, EditPasswordRequest request)throws Exception;
 
     List<UserResponse> getUsers(String token)throws Exception;
+
+    List<UserResponse> searchUsers(String token, SearchRequest searchRequest)throws Exception;
 }

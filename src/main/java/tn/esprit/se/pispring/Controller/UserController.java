@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.se.pispring.DTO.Request.CurrentUserRequest;
 import tn.esprit.se.pispring.DTO.Request.EditPasswordRequest;
+import tn.esprit.se.pispring.DTO.Request.SearchRequest;
 import tn.esprit.se.pispring.DTO.Response.CurrentUserResponse;
 import tn.esprit.se.pispring.DTO.Response.UserResponse;
 import tn.esprit.se.pispring.Service.UserService;
@@ -60,6 +61,23 @@ public class UserController {
         }catch (Exception e) {
             throw new Exception(e);
         }
+
+    }
+
+    @PostMapping("/search")
+    //@PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE8STAFF')")
+    public ResponseEntity<?> searchUsers(@RequestHeader(name = "Authorization") String token, @RequestBody SearchRequest searchRequest) throws Exception {
+
+        try {
+
+            List<UserResponse> users = userService.searchUsers(token, searchRequest);
+            return ResponseEntity.ok(users);
+
+
+        }catch (Exception e) {
+            throw new Exception(e);
+        }
+
 
     }
 

@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tn.esprit.se.pispring.DTO.Request.CurrentUserRequest;
 import tn.esprit.se.pispring.DTO.Request.EditPasswordRequest;
+import tn.esprit.se.pispring.DTO.Request.SearchRequest;
 import tn.esprit.se.pispring.DTO.Request.UserSignupRequest;
 import tn.esprit.se.pispring.DTO.Response.CurrentUserResponse;
 import tn.esprit.se.pispring.DTO.Response.UserResponse;
@@ -123,6 +124,19 @@ public class UserImp implements UserService {
                    ))
                     .collect(Collectors.toList());
 
+        }catch (Exception e) {
+            throw new Exception(e);
+        }
+    }
+
+    @Override
+    public List<UserResponse> searchUsers(String token, SearchRequest searchRequest) throws Exception {
+        try {
+            return userRepository.searchUsers(searchRequest.getKeyword(), (Portfolio) userRepository
+                   .findByEmail(jwtUtils.getUsernameFromToken(token.split(" ")[1].trim())).getPortfolios())
+                   .stream().filter(appUser -> !appUser.getRoles().contains(roleRepo
+                   .findRoleByRoleName(ERole.ROLE_ADMIN))).map(appUser -> new UserResponse(
+                    )).collect(Collectors.toList());
         }catch (Exception e) {
             throw new Exception(e);
         }
