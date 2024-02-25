@@ -29,8 +29,7 @@ public class Product {
 
     @ManyToMany(mappedBy="products", cascade = CascadeType.ALL)
     private Set<Cart> carts;
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Set<Supplier> suppliers;
+
     @Enumerated(EnumType.STRING)
     private ProductType productType ;
 }

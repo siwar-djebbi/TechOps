@@ -12,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Leave {
+public class Leav {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long leave_id;

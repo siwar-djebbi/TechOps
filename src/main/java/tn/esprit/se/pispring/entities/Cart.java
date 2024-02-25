@@ -28,6 +28,5 @@ public class Cart {
 
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Product> products;
-    @OneToOne
-    private Invoice invoice;
+
 }
