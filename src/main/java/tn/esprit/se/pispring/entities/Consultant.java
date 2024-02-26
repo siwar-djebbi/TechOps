@@ -1,6 +1,8 @@
 package tn.esprit.se.pispring.entities;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.Date;
@@ -25,8 +27,10 @@ public class Consultant {
     private Date date_last_meet ;
     private String date_last_meeet ;
     private Long clientnumber;
+    @Enumerated(EnumType.STRING) //9oul ll jme3a yzidouha
     private Skill skill;
 
+    @JsonIgnore
     @OneToOne
     private Portfolio portfolio;
 }
