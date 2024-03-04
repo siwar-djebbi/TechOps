@@ -2,6 +2,7 @@ package tn.esprit.se.pispring.Controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -10,10 +11,13 @@ import tn.esprit.se.pispring.DTO.Request.EditPasswordRequest;
 import tn.esprit.se.pispring.DTO.Request.SearchRequest;
 import tn.esprit.se.pispring.DTO.Response.CurrentUserResponse;
 import tn.esprit.se.pispring.DTO.Response.UserResponse;
+import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.Service.UserService;
+import tn.esprit.se.pispring.entities.User;
 
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -21,6 +25,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepo;
 
     @GetMapping("/getCurrent")
     public ResponseEntity<?> getCurrentUserInfos(@RequestHeader(name = "Authorization") String token) throws Exception {
@@ -32,7 +37,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/editCurrent")
+    @PutMapping("/editCurrent")
     public ResponseEntity<?> editCurrent(@RequestHeader(name = "Authorization") String token, @RequestBody CurrentUserRequest request) throws Exception {
         try {
             CurrentUserResponse user = userService.editCurrentUserInfos(token, request);
@@ -52,7 +57,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/all")
+    @GetMapping("/alll")
     //@PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_STAFF')")
     public ResponseEntity<?> getUsers(@RequestHeader(name = "Authorization") String token) throws Exception {
         try {
@@ -79,6 +84,11 @@ public class UserController {
         }
 
 
+    }
+
+    @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Iterable<User> findConnectedUsers() {
+        return userRepo.findAll();
     }
 
 

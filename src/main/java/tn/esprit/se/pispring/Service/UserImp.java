@@ -76,9 +76,9 @@ public class UserImp implements UserService {
     public CurrentUserResponse editCurrentUserInfos(String token, CurrentUserRequest request) throws Exception {
         try {
             User user = userRepository.findByEmail(jwtUtils.getUsernameFromToken(token.split(" ")[1].trim()));
-            if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())){
-                throw new Exception("incorrect password");
-            }
+//            if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())){
+//                throw new Exception("incorrect password");
+//            }
             user.setFirstName(request.getFirstName());
             user.setLastName(request.getLastName());
             user.setEmail(request.getEmail());
@@ -119,7 +119,7 @@ public class UserImp implements UserService {
             return userRepository.findUsers((Portfolio) userRepository.
                    findByEmail(jwtUtils.getUsernameFromToken(token.split(" ")[1].trim())).
                    getPortfolio()).stream().filter(User -> !User.getRoles().
-                   contains(roleRepo.findRoleByRoleName(ERole.ROLE_ADMIN)))
+                   contains(roleRepo.findRoleByRoleName(ERole.ROLE_USER)))
                    .map(User -> new UserResponse(
                    ))
                     .collect(Collectors.toList());
