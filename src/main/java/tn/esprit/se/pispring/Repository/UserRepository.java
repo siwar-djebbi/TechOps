@@ -12,6 +12,8 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User,Long> {
 
+    User findAppUserByEmail(String email);
+
     Optional<User> findOneByEmailAndPassword(String email, String password);
     User findByEmail(String email);
 
@@ -23,6 +25,8 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query("select u from User u where u.portfolio = :portfolios and u.deleted = false")
     List<User> findUsers(Portfolio portfolios);
 
-    @Query("select u from User u where (u.firstName like concat(:keyword, '%') or u.lastName like concat(:keyword, '%') or u.email like concat(:keyword, '%')) and u.portfolio = :portfolios and u.deleted = false")
-    List<User> searchUsers(String keyword, Portfolio portfolios);
+    @Query("select u from User u where (u.firstName like concat(:keyword, '%')" +
+            " or u.lastName like concat(:keyword, '%') or u.email like concat(:keyword, '%'))" +
+            " and u.deleted = false")
+    List<User> searchUsers(String keyword);
 }

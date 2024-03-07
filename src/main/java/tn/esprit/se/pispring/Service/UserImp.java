@@ -1,23 +1,21 @@
 package tn.esprit.se.pispring.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import tn.esprit.se.pispring.DTO.Request.CurrentUserRequest;
-import tn.esprit.se.pispring.DTO.Request.EditPasswordRequest;
-import tn.esprit.se.pispring.DTO.Request.SearchRequest;
-import tn.esprit.se.pispring.DTO.Request.UserSignupRequest;
+import tn.esprit.se.pispring.DTO.Request.*;
 import tn.esprit.se.pispring.DTO.Response.CurrentUserResponse;
 import tn.esprit.se.pispring.DTO.Response.UserResponse;
 import tn.esprit.se.pispring.Repository.RoleRepo;
 import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.entities.ERole;
-import tn.esprit.se.pispring.entities.Portfolio;
 import tn.esprit.se.pispring.entities.Role;
 import tn.esprit.se.pispring.entities.User;
 import tn.esprit.se.pispring.secConfig.JwtUtils;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,8 +23,12 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class UserImp implements UserService {
 
+
+    @Value("${asserter.default.secret}")
+    private  String DEFAULT_PASSWORD;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -55,6 +57,32 @@ public class UserImp implements UserService {
     public User findByEmail(String username) {
         return userRepository.findByEmail(username);
     }
+
+    @Override
+    public User createNewUser(String token, UserRequest userRequest) throws Exception {
+        log.info(userRequest.toString());
+        try {
+
+            User newUser = new User();
+            List<Role> roles = new ArrayList<>();
+            roles.add(roleRepo.findRoleByRoleName(ERole.ROLE_USER));
+            if(userRequest.getRole().equalsIgnoreCase("hre"))
+                roles.add(roleRepo.findRoleByRoleName(ERole.ROLE_HRE));
+            newUser.setRoles(roles);
+            newUser.setPassword(passwordEncoder.encode(DEFAULT_PASSWORD));
+            newUser.setFirstName(userRequest.getFirstName());
+            newUser.setLastName(userRequest.getLastName());
+
+            newUser.setEmail(userRequest.getEmail());
+
+            newUser.setEnabled(true);
+            return userRepository.save(newUser);
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
+
+    }
+
 
     @Override
     public CurrentUserResponse getCurrentUserInfos(String token) throws Exception {
@@ -116,7 +144,7 @@ public class UserImp implements UserService {
     public List<UserResponse> getUsers(String token) throws Exception {
         try {
 
-            return userRepository.findUsers((Portfolio) userRepository.
+            return userRepository.findUsers(userRepository.
                    findByEmail(jwtUtils.getUsernameFromToken(token.split(" ")[1].trim())).
                    getPortfolio()).stream().filter(User -> !User.getRoles().
                    contains(roleRepo.findRoleByRoleName(ERole.ROLE_USER)))
@@ -132,13 +160,55 @@ public class UserImp implements UserService {
     @Override
     public List<UserResponse> searchUsers(String token, SearchRequest searchRequest) throws Exception {
         try {
-            return userRepository.searchUsers(searchRequest.getKeyword(), (Portfolio) userRepository
-                   .findByEmail(jwtUtils.getUsernameFromToken(token.split(" ")[1].trim())).getPortfolio())
-                   .stream().filter(appUser -> !appUser.getRoles().contains(roleRepo
-                   .findRoleByRoleName(ERole.ROLE_ADMIN))).map(appUser -> new UserResponse(
-                    )).collect(Collectors.toList());
-        }catch (Exception e) {
+            // Retrieve users based on the search keyword
+            List<User> users = userRepository.searchUsers(searchRequest.getKeyword());
+
+            // Filter out users with roles containing ROLE_ADMIN
+            List<User> filteredUsers = users.stream()
+                    .filter(user -> user.getRoles().stream().noneMatch(role -> role.getRoleName() == ERole.ROLE_ADMIN))
+                    .collect(Collectors.toList());
+
+            // Map the filtered users to UserResponse objects
+            List<UserResponse> userResponses = filteredUsers.stream()
+                    .map(user -> new UserResponse(
+                            user.getFirstName(),
+                            user.getLastName(),
+                            user.getEmail(),
+                            user.getId(),
+                            "user" // Assuming role should always be "user"
+                    ))
+                    .collect(Collectors.toList());
+
+            return userResponses;
+        } catch (Exception e) {
             throw new Exception(e);
         }
     }
-}
+
+    @Override
+        public void deleteUsers(DeleteUsersRequest deleteUsersRequest) throws Exception {
+            log.info("#########################");
+            log.info("this is the userRequestEmailsSize {}", deleteUsersRequest.getEmails().size());
+            try {
+                if (deleteUsersRequest.getEmails().size() == 1) {
+                    String email = deleteUsersRequest.getEmails().get(0);
+                    User user = userRepository.findAppUserByEmail(email);
+                    if (user != null) {
+                        userRepository.delete(user);
+                    }
+                } else {
+                    for (String email : deleteUsersRequest.getEmails()) {
+                        User user = userRepository.findAppUserByEmail(email);
+                        if (user != null) {
+                            userRepository.delete(user);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                throw new Exception(e);
+            }
+        }
+
+
+
+    }

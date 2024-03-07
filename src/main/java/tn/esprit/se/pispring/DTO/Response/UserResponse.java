@@ -12,6 +12,7 @@ public class UserResponse {
     private String LastName;
     private String email;
     private Long id;
-    private String timing;
+    //private String timing;
     private String role;
+
 }
