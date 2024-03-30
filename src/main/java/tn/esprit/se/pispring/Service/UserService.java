@@ -3,6 +3,7 @@ package tn.esprit.se.pispring.Service;
 import org.springframework.stereotype.Service;
 import tn.esprit.se.pispring.DTO.Request.*;
 import tn.esprit.se.pispring.DTO.Response.CurrentUserResponse;
+import tn.esprit.se.pispring.DTO.Response.PageResponse;
 import tn.esprit.se.pispring.DTO.Response.UserResponse;
 import tn.esprit.se.pispring.entities.User;
 
@@ -28,5 +29,10 @@ public interface UserService {
     List<UserResponse> searchUsers(String token, SearchRequest searchRequest)throws Exception;
 
     void deleteUsers(DeleteUsersRequest deleteUsersRequest) throws Exception;
+
+    PageResponse<UserResponse> findAll(Long page, Long size, String criteria, String direction, String searchTerm);
+    UserResponse addUser(AddUserRequest request);
+
+
 
 }

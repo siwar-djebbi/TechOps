@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
-@CrossOrigin("*")
+@CrossOrigin(origins ="http://localhost:4200")
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -39,7 +39,7 @@ public class UserController {
 
 
     @PostMapping("/create")
-    //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
     public ResponseEntity<?> createNewUser(final HttpServletRequest request, @RequestHeader(name = "Authorization") String token, @RequestBody @Valid UserRequest userRequest) throws Exception {
         try {
             User newUser = userService.createNewUser(token, userRequest);
@@ -49,7 +49,7 @@ public class UserController {
             }
             Role role = roleService.findRoleByRoleName(ERole.ROLE_USER);
             assert newUser != null;
-            return ResponseEntity.ok(new UserResponse(newUser.getFirstName(), newUser.getFirstName(), newUser.getEmail(), newUser.getId(), newUser.getRoles().contains(role) ? "user"  : "hre"));
+            return ResponseEntity.ok(new UserResponse(newUser.getId(),newUser.getFirstName(), newUser.getFirstName(), newUser.getEmail(),  newUser.getTelephone()));
 
         }catch (Exception e) {
             throw new Exception(e);

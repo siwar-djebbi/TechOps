@@ -13,7 +13,6 @@ public class UserRequest {
     private String email;
     private String role = "user";
 
-    @NotBlank(message = "portfolio is mandatory")
     private String portfolio;
 
 }

@@ -18,6 +18,7 @@ import tn.esprit.se.pispring.Service.UserService;
 import tn.esprit.se.pispring.entities.User;
 import tn.esprit.se.pispring.secConfig.JwtUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,6 +94,24 @@ public class AuthController {
         return ResponseEntity.ok(auth);
     }
 
+    @GetMapping("/verifyRegistration")
+    public String verifyRegistration(@RequestParam("token") String token) throws Exception {
+        return null; //userService.validateVerificationTokenForUser(token);
+    }
+
+    @GetMapping("/resendVerification")
+    public String resendVerificationToken(@RequestParam("token") String oldToken, final HttpServletRequest httpServletRequest) throws Exception {
+//        try {
+//            VerificationToken token = userService.generateNewTokenForUser(oldToken);
+//            User user = token.getUser();
+//            resendVerificationEmail(applicationUrl(httpServletRequest), token, user);
+//
+//            return "verification link sent";
+//        }catch (Exception e) {
+//            throw new Exception("error resending the verification token please try again in 30 seconds");
+//        }
+        return oldToken;
+    }
 
 
 }
