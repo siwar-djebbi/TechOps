@@ -14,7 +14,7 @@ public record MailUtility(JavaMailSender mailSender) {
         MimeMessageHelper helper = null;
         try {
             helper = new MimeMessageHelper(message, true);
-            helper.setFrom("ahmedbayrem.bjaoui1@esprit.tn");
+            helper.setFrom("haythambrahem@gmail.com");
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(text, true);
