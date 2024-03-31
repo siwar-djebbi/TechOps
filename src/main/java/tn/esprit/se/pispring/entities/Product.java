@@ -1,6 +1,6 @@
 package tn.esprit.se.pispring.entities;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 import java.util.Date;
@@ -16,21 +16,22 @@ import java.util.Set;
 public class Product {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long product_id;
-    private Integer product_quantity;
-    private String product_reference;
-    private String product_title;
-    private String product_image;
-    private String product_description;
+    private Long productId;
+    private Integer quantity;
+    private String reference;
+    private String title;
+    private String image;
+    private String description;
     private Long stock;
+    private Float price;
+    private Float TVA;
 
     @Temporal(TemporalType.DATE)
     private Date createdAt;
 
     @ManyToMany(mappedBy="products", cascade = CascadeType.ALL)
     private Set<Cart> carts;
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Set<Supplier> suppliers;
+
     @Enumerated(EnumType.STRING)
     private ProductType productType ;
 }

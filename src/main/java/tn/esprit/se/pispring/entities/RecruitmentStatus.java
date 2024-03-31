@@ -1,6 +1,6 @@
 package tn.esprit.se.pispring.entities;
 
-public enum Recruitment_Status {
+public enum RecruitmentStatus {
     CLOSED,
     OPEN
 }

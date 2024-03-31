@@ -1,9 +1,13 @@
 package tn.esprit.se.pispring.entities;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+
+import static javax.persistence.FetchType.EAGER;
 
 @Builder
 @Getter
@@ -12,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-
+@Data
 public class User {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -23,10 +27,14 @@ public class User {
     private String password;
     private Integer telephone;
 
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
+
+    @ManyToMany(fetch = EAGER)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns  = @JoinColumn(name = "role_id"))
+    private List<Role> roles = new ArrayList<>();
 
     private Boolean connected = false;
+    private boolean deleted = false;
+
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     private Set<Recruitment> Recruitments;
@@ -44,14 +52,23 @@ public class User {
     private Set<Contribution> Contributions;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
-    private Set<Leave> Leaves;
+    private Set<Leav> Leaves;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
-    private Set<Cart> Carts;
-
-    @ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
-    private Set<Portfolio> portfolios;
+    //@ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
+   // private Set<Portfolio> portfolios;
 
     @ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
     private Set<Task> tasks;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
+    private Set<Command> Commands;
+
+    //@OneToOne(mappedBy="portfolio")
+    //private Consultant consultant;
+
+    @ManyToOne
+    Portfolio portfolio;
+
+    @OneToOne
+    private CustomerTracking customertracking;
 }

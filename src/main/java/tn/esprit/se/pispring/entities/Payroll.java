@@ -1,12 +1,14 @@
 package tn.esprit.se.pispring.entities;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 @Builder
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "user")
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -27,8 +29,9 @@ public class Payroll {
     private String bank_name;
     private Long account_number;
     @Enumerated(EnumType.STRING)
-    private PaymentMehod payment_method;
+    private PaymentMethod payment_method;
     @ManyToOne
+    @JsonBackReference
     User user;
 
 

@@ -1,9 +1,11 @@
 package tn.esprit.se.pispring.entities;
 
-import jakarta.persistence.*;
 import lombok.*;
 
+import javax.persistence.*;
+import javax.persistence.Id;
 import java.util.Date;
+import tn.esprit.se.pispring.entities.Cart;
 
 @Builder
 @Getter
@@ -12,22 +14,20 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Leave {
+public class Command {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long leave_id;
-
+    private Long commandId;
     @Temporal(TemporalType.DATE)
-    private Date leave_startdate;
-
-    @Temporal(TemporalType.DATE)
-    private Date leave_enddate;
+    private Date dateCommand;
+    @Enumerated(EnumType.STRING)
+    private CommandStatus commandStatus;
 
     @Enumerated(EnumType.STRING)
-    private LeaveType leaveType;
-    @Enumerated(EnumType.STRING)
-    private LeaveStatus leaveStatus;
+    private CommandPayment commandPayment;
     @ManyToOne
     User user;
+    @OneToOne(mappedBy="command")
+    private Cart cart;
 
 }

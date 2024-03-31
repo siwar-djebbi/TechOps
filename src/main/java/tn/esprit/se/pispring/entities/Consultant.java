@@ -1,9 +1,9 @@
 package tn.esprit.se.pispring.entities;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
-import java.util.Set;
+import java.util.Date;
 
 @Builder
 @Getter
@@ -21,6 +21,12 @@ public class Consultant {
     private String consultant_address;
     private String consultant_email;
     private Long consultant_phonenumber;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="consultant")
-    private Set<Portfolio> Portfolios;
+    @Temporal(TemporalType.DATE)
+    private Date date_last_meet ;
+    private String date_last_meeet ;
+    private Long clientnumber;
+    private Skill skill;
+
+    @OneToOne
+    private Portfolio portfolio;
 }
