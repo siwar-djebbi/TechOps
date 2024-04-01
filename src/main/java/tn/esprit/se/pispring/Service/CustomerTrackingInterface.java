@@ -17,5 +17,6 @@ public interface CustomerTrackingInterface {
     CustomerTracking retrieveCustomerTracking(Long idCustomerTracking);
 
     void removeCustomerTracking(Long idCustomerTracking);
+    int getTotalUsers();
 
 }

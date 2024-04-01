@@ -45,7 +45,7 @@ public class SecurityConfiguration {
                 .authenticationEntryPoint((request, response, exception) -> {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
                 }).and()
-                .authorizeRequests().antMatchers("/CRM/**")
+                .authorizeRequests().antMatchers("/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

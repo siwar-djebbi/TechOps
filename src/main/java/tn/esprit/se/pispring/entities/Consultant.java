@@ -24,10 +24,18 @@ public class Consultant {
     private String consultant_email;
     private Long consultant_phonenumber;
     @Temporal(TemporalType.DATE)
+    private Date date_birth;
+    @Temporal(TemporalType.DATE)
+    private Date hireDate;
+    @Temporal(TemporalType.DATE)
     private Date date_last_meet ;
     private String date_last_meeet ;
     private Long clientnumber;
-    @Enumerated(EnumType.STRING) //9oul ll jme3a yzidouha
+    private String image;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Enumerated(EnumType.STRING)
     private Skill skill;
 
     @JsonIgnore
