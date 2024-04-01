@@ -6,12 +6,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.se.pispring.Service.ContributionService;
 import tn.esprit.se.pispring.Service.PayrollService;
 import tn.esprit.se.pispring.Service.PrimeService;
 import tn.esprit.se.pispring.entities.Payroll;
-import tn.esprit.se.pispring.entities.Prime;
-import tn.esprit.se.pispring.entities.User;
 import tn.esprit.se.pispring.utils.GeneratePdfPayroll;
 import tn.esprit.se.pispring.utils.SendEmail;
 
