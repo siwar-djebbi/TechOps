@@ -25,6 +25,7 @@ public class Consultant {
     private Date date_last_meet ;
     private String date_last_meeet ;
     private Long clientnumber;
+    @Enumerated(EnumType.STRING)
     private Skill skill;
 
     @OneToOne

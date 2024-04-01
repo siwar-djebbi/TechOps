@@ -43,7 +43,7 @@ public class JwtUtils implements Serializable {
     private Claims getAllClaimsFromToken(String token) {
         // parser is deprecated instead use parserBuilder and same for set signingKey with string parameter so use the one with bytes array
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-          }
+    }
 
     //check if the token has expired
     private Boolean isTokenExpired(String token) {
@@ -53,7 +53,7 @@ public class JwtUtils implements Serializable {
 
     //generate token for user
     public String generateToken(UserDetails userDetails, Map<String, Object> claims) {
-        
+
         return doGenerateToken(claims, userDetails.getUsername(), JWT_TOKEN_VALIDITY);
     }
 

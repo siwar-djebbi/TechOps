@@ -1,8 +1,12 @@
 package tn.esprit.se.pispring.entities;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Builder
@@ -24,10 +28,10 @@ public class Leav {
     private Date leaveEnddate;
 
     @Enumerated(EnumType.STRING)
-    private LeaveType leaveType;
+    private LeaveType LeaveType;
 
     @Enumerated(EnumType.STRING)
-    private LeaveStatus leaveStatus;
+    private LeaveStatus LeaveStatus;
 
     private String reason;
 
@@ -42,6 +46,7 @@ public class Leav {
 
     private Integer leaveDaysLeft; // Number of leave days left for the employee
     @ManyToOne
+    @JsonIgnore
     User user;
 
 }

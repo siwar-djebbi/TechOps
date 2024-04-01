@@ -34,7 +34,7 @@ public class User {
 
     private Boolean connected = false;
     private boolean deleted = false;
-
+    private boolean enabled= true;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     private Set<Recruitment> Recruitments;
@@ -55,7 +55,7 @@ public class User {
     private Set<Leav> Leaves;
 
     //@ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
-   // private Set<Portfolio> portfolios;
+    // private Set<Portfolio> portfolios;
 
     @ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
     private Set<Task> tasks;

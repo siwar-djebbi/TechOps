@@ -1,6 +1,8 @@
 package tn.esprit.se.pispring.entities;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.Date;
@@ -31,6 +33,7 @@ public class Recruitment {
     private Date recruitmentDate;
     @Enumerated(EnumType.STRING)
     private RecruitmentStatus recruitmentStatus;
+    @JsonIgnore
     @ManyToOne
     User user;
 }

@@ -1,11 +1,9 @@
 package tn.esprit.se.pispring.Service;
 
 import org.springframework.stereotype.Service;
-import tn.esprit.se.pispring.DTO.Request.CurrentUserRequest;
-import tn.esprit.se.pispring.DTO.Request.EditPasswordRequest;
-import tn.esprit.se.pispring.DTO.Request.SearchRequest;
-import tn.esprit.se.pispring.DTO.Request.UserSignupRequest;
+import tn.esprit.se.pispring.DTO.Request.*;
 import tn.esprit.se.pispring.DTO.Response.CurrentUserResponse;
+import tn.esprit.se.pispring.DTO.Response.PageResponse;
 import tn.esprit.se.pispring.DTO.Response.UserResponse;
 import tn.esprit.se.pispring.entities.User;
 
@@ -17,6 +15,8 @@ public interface UserService {
     String signup(UserSignupRequest userReq) throws Exception;
 
     User findByEmail(String username);
+    User createNewUser(String token, UserRequest userRequest) throws Exception;
+
 
     CurrentUserResponse getCurrentUserInfos(String token) throws Exception;
 
@@ -27,4 +27,12 @@ public interface UserService {
     List<UserResponse> getUsers(String token)throws Exception;
 
     List<UserResponse> searchUsers(String token, SearchRequest searchRequest)throws Exception;
+
+    void deleteUsers(DeleteUsersRequest deleteUsersRequest) throws Exception;
+
+    PageResponse<UserResponse> findAll(Long page, Long size, String criteria, String direction, String searchTerm);
+    UserResponse addUser(AddUserRequest request);
+
+
+
 }
