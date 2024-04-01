@@ -1,6 +1,8 @@
 package tn.esprit.se.pispring.entities;
 
 import javax.persistence.*;
+
+
 import lombok.*;
 
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.Set;
 
 import static javax.persistence.FetchType.EAGER;
 
+
 @Builder
 @Getter
 @Setter
@@ -16,7 +19,7 @@ import static javax.persistence.FetchType.EAGER;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Data
+
 public class User {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -26,6 +29,9 @@ public class User {
     private String email;
     private String password;
     private Integer telephone;
+    private Integer salaire;
+    private double hourlyRate;
+
 
 
     @ManyToMany(fetch = EAGER)
@@ -54,18 +60,21 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     private Set<Leav> Leaves;
 
-    @ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "task_users",
+            joinColumns = @JoinColumn(name = "users_id"),
+            inverseJoinColumns = @JoinColumn(name = "tasks_task_id"))
+
     private Set<Task> tasks;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     private Set<Command> Commands;
-
-    //@OneToOne(mappedBy="portfolio")
-    //private Consultant consultant;
 
     @ManyToOne
     Portfolio portfolio;
 
     @OneToOne
     private CustomerTracking customertracking;
+
 }

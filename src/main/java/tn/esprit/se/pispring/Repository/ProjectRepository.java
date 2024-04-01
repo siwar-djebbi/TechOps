@@ -1,15 +1,16 @@
 package tn.esprit.se.pispring.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import tn.esprit.se.pispring.entities.Project;
-import tn.esprit.se.pispring.entities.Task;
+import tn.esprit.se.pispring.entities.ProjectStatus;
 
+import java.util.Date;
 import java.util.List;
 
 public interface ProjectRepository extends JpaRepository<Project,Long> {
-    @Query("SELECT p FROM Project p WHERE p.project_manager = :projectManager")
-    List<Project> findByProjectManager(@Param("projectManager") String projectManager);
+   // Project delete(Long projectId);
+   List<Project> findByProjectEnddateBeforeAndProjectStatusNot(Date projectEnddate, ProjectStatus projectStatus);
+   List<Project> findByProjectEnddateBeforeAndProjectStatusNotAndProjectEnddateBefore(Date enddate, ProjectStatus status, Date estimatedEnddate);
+   List<Project> findByProjectStatus(ProjectStatus status);
 
 }
