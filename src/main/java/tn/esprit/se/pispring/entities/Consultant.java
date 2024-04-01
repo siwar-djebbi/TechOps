@@ -3,6 +3,7 @@ package tn.esprit.se.pispring.entities;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.*;
 
 import java.util.Date;
@@ -37,8 +38,6 @@ public class Consultant {
 
     @Enumerated(EnumType.STRING)
     private Skill skill;
-
-    @JsonIgnore
     @OneToOne
     private Portfolio portfolio;
 }

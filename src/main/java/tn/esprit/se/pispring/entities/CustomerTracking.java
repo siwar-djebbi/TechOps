@@ -26,14 +26,12 @@ public class CustomerTracking {
     @Temporal(TemporalType.DATE)
     private Date date_last_meet ;
     private String date_last_meeet ;
-
     private String meet_duration ;
     private String meet_subject ;
     private String meet_participant ;
     private String meet_objective ;
     private String next_step ;
     private Integer nb_meeting ;
-
     @OneToOne(mappedBy="customertracking",cascade = CascadeType.ALL)
     private User user;
 

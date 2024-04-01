@@ -130,6 +130,18 @@ public class UserImp implements UserService {
     }
 
     @Override
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public User retrieveUser(Long idUser) {
+        return userRepository.findById(idUser).get();
+    }
+
+    @Override
+
     public List<UserResponse> searchUsers(String token, SearchRequest searchRequest) throws Exception {
         try {
             return userRepository.searchUsers(searchRequest.getKeyword(), (Portfolio) userRepository
