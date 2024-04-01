@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-
+@CrossOrigin(origins ="http://localhost:8089")
 @RestController
 @CrossOrigin
 @RequestMapping("/auth")
@@ -54,7 +54,7 @@ public class AuthController {
 
     }
 
-    @PostMapping()
+    @PostMapping("/signin")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest authenticationRequest, final HttpServletResponse response) throws Exception {
 
         try {

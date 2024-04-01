@@ -40,7 +40,7 @@ public class User {
 
     private Boolean connected = false;
     private boolean deleted = false;
-
+    private boolean enabled= true;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     private Set<Recruitment> Recruitments;
@@ -59,7 +59,6 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     private Set<Leav> Leaves;
-
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "task_users",
