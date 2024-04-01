@@ -1,5 +1,7 @@
 package tn.esprit.se.pispring.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,9 +19,8 @@ public class Budget {
     private Long budget_id;
     private Float budget_amount;
     private String dependencies;
-    @OneToOne(mappedBy="budget")
+    @OneToOne
+    @JoinColumn(name = "project_id")
+    @JsonIgnore
     private Project project;
-
-
-
 }

@@ -5,6 +5,7 @@ import tn.esprit.se.pispring.DTO.Request.*;
 import tn.esprit.se.pispring.DTO.Response.CurrentUserResponse;
 import tn.esprit.se.pispring.DTO.Response.PageResponse;
 import tn.esprit.se.pispring.DTO.Response.UserResponse;
+import tn.esprit.se.pispring.entities.Prime;
 import tn.esprit.se.pispring.entities.User;
 
 import java.util.List;
@@ -25,6 +26,8 @@ public interface UserService {
     String editPassword(String token, EditPasswordRequest request)throws Exception;
 
     List<UserResponse> getUsers(String token)throws Exception;
+    List<User> getAllUsers();
+    User retrieveUser(Long idUser);
 
     List<UserResponse> searchUsers(String token, SearchRequest searchRequest)throws Exception;
 

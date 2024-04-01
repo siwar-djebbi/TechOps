@@ -8,6 +8,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableScheduling
 @SpringBootApplication
+@EnableScheduling
+
 public class PiSpringApplication {
 
     public static void main(String[] args) {

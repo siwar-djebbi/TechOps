@@ -21,6 +21,10 @@ public class Resources {
     @Enumerated(EnumType.STRING)
     private ResourceType resourceType;
     private Float resources_cost;
-    @ManyToMany(mappedBy="resourcess", cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "task_resourcess",
+            joinColumns = @JoinColumn(name = "resourcess_resource_id"),
+            inverseJoinColumns = @JoinColumn(name = "tasks_task_id"))
     private Set<Task> tasks;
 }

@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 @CrossOrigin(origins ="http://localhost:8089")
 @RestController
+@CrossOrigin
 @RequestMapping("/auth")
 @Slf4j
 public class AuthController {
