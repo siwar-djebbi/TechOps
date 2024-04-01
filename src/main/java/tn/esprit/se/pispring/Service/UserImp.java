@@ -130,6 +130,7 @@ public class UserImp implements UserService {
     }
 
     @Override
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -140,6 +141,7 @@ public class UserImp implements UserService {
     }
 
     @Override
+
     public List<UserResponse> searchUsers(String token, SearchRequest searchRequest) throws Exception {
         try {
             return userRepository.searchUsers(searchRequest.getKeyword(), (Portfolio) userRepository

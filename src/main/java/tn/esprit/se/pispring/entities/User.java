@@ -54,9 +54,6 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     private Set<Leav> Leaves;
 
-    //@ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
-   // private Set<Portfolio> portfolios;
-
     @ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
     private Set<Task> tasks;
 

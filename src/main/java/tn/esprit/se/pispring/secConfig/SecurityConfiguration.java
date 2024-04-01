@@ -33,9 +33,7 @@ public class SecurityConfiguration {
     private final JwtFilter jwtFilter;
 
     private final PasswordEncoder passwordEncoder;
-    private static final String[] AUTH_WHITELIST = {
-            "/Payroll/**",
-            "/v3/api-docs/**"};
+
 
 
 

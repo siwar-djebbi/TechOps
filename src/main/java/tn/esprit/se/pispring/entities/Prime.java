@@ -1,7 +1,6 @@
 package tn.esprit.se.pispring.entities;
 
 import javax.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
