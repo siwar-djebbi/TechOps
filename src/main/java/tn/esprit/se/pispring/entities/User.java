@@ -60,21 +60,16 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     private Set<Leav> Leaves;
 
-    //@ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
-   // private Set<Portfolio> portfolios;
-
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "task_users",
             joinColumns = @JoinColumn(name = "users_id"),
             inverseJoinColumns = @JoinColumn(name = "tasks_task_id"))
+
     private Set<Task> tasks;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     private Set<Command> Commands;
-
-    //@OneToOne(mappedBy="portfolio")
-    //private Consultant consultant;
 
     @ManyToOne
     Portfolio portfolio;

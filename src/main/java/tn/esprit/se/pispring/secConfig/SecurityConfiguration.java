@@ -36,6 +36,7 @@ public class SecurityConfiguration {
 
 
 
+
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
 
@@ -45,7 +46,8 @@ public class SecurityConfiguration {
                 .authenticationEntryPoint((request, response, exception) -> {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
                 }).and()
-                .authorizeRequests().antMatchers("/Project/**", "/Task/**","/Budget/**")
+
+                .authorizeRequests().antMatchers("/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

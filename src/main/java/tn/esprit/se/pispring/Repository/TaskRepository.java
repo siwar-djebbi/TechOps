@@ -20,4 +20,5 @@ public interface TaskRepository extends JpaRepository<Task,Long> {
    /* @Query("SELECT DISTINCT u FROM Task t JOIN t.users u WHERE t.project.projectId = :projectId")
     List<User> findUsersByProjectId(@Param("projectId") Long projectId);*/
 
+
 }
