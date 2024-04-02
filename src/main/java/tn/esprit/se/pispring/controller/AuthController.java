@@ -10,10 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import tn.esprit.se.pispring.DTO.Request.AuthenticationRequest;
 import tn.esprit.se.pispring.DTO.Request.UserSignupRequest;
 import tn.esprit.se.pispring.DTO.Response.AuthenticationResponse;
@@ -25,8 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-
+@CrossOrigin(origins ="http://localhost:8089")
 @RestController
+@CrossOrigin
 @RequestMapping("/auth")
 @Slf4j
 public class AuthController {
@@ -56,7 +53,7 @@ public class AuthController {
 
     }
 
-    @PostMapping()
+    @PostMapping("/signin")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest authenticationRequest, final HttpServletResponse response) throws Exception {
 
         try {
