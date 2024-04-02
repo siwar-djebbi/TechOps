@@ -289,7 +289,7 @@ public class PortfolioService implements PortfolioInterface{
         // Pour les tâches
         for (Project project : projects) {
             for (Task task : project.getTasks()) {
-                String monthYear = getMonthYear(task.getTask_enddate());
+                String monthYear = getMonthYear(task.getTaskEnddate());
                 tasksPerMonth.put(monthYear, tasksPerMonth.getOrDefault(monthYear, 0) + 1);
             }
         }

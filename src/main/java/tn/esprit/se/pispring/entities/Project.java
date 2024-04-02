@@ -19,7 +19,7 @@ public class Project {
     @Temporal(TemporalType.DATE)
     private Date projectEnddate;
     private String project_description;
-    private String project_manager;
+    private String projectManager;
 
     @Enumerated(EnumType.STRING)
     private ProjectStatus projectStatus;
@@ -70,11 +70,11 @@ public class Project {
     }
 
     public String getProject_manager() {
-        return project_manager;
+        return projectManager;
     }
 
     public void setProject_manager(String project_manager) {
-        this.project_manager = project_manager;
+        this.projectManager = project_manager;
     }
 
     public ProjectStatus getProjectStatus() {

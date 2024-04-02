@@ -38,7 +38,7 @@ public class UserStatisticsService {
             // Iterate over each task
             for (Task task : tasks) {
                 Project project = task.getProject();
-                ProjectResponse projectResponse = new ProjectResponse(project.getProject_id(), project.getProject_name(),project.getProject_startdate(),project.getProject_enddate(),project.getProject_description(), project.getProject_manager(),project.getProjectStatus());
+                ProjectResponse projectResponse = new ProjectResponse(project.getProjectId(), project.getProject_name(),project.getProject_startdate(),project.getProjectEnddate(),project.getProject_description(), project.getProject_manager(),project.getProjectStatus());
 
                 // Increment task count for the project
                 projectStats.put(projectResponse, projectStats.getOrDefault(projectResponse, 0) + 1);

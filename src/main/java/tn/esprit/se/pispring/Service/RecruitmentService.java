@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tn.esprit.se.pispring.Repository.RecruitmentRepository;
+import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.entities.Recruitment;
 
 import java.util.List;

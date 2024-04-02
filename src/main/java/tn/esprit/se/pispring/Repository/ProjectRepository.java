@@ -13,4 +13,5 @@ public interface ProjectRepository extends JpaRepository<Project,Long> {
    List<Project> findByProjectEnddateBeforeAndProjectStatusNotAndProjectEnddateBefore(Date enddate, ProjectStatus status, Date estimatedEnddate);
    List<Project> findByProjectStatus(ProjectStatus status);
 
+   List<Project> findByProjectManager(String potfolioManager);
 }

@@ -21,7 +21,7 @@ public class Task {
     @Temporal(TemporalType.DATE)
     private Date task_startdate;
     @Temporal(TemporalType.DATE)
-    private Date task_enddate;
+    private Date taskEnddate;
     private String task_description;
     @Enumerated(EnumType.STRING)
     private TaskStatus taskStatus;

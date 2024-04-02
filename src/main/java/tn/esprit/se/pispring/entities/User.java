@@ -26,7 +26,7 @@ public class User {
     private String email;
     private String password;
     private Integer telephone;
-
+    private Integer salaire;
 
     @ManyToMany(fetch = EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns  = @JoinColumn(name = "role_id"))

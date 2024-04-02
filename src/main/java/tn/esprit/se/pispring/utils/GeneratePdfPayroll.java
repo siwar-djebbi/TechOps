@@ -6,6 +6,7 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import tn.esprit.se.pispring.Service.ContributionService;
 import tn.esprit.se.pispring.Service.PrimeService;
 import tn.esprit.se.pispring.entities.Contribution;
 import tn.esprit.se.pispring.entities.Payroll;
