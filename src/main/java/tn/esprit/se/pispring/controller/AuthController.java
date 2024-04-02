@@ -28,11 +28,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-//@CrossOrigin(origins ="http://localhost:8089")
+@CrossOrigin(origins ="http://localhost:8089")
 @RestController
 @RequestMapping("/auth")
 @Slf4j
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 
     @Autowired
