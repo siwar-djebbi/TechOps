@@ -1,6 +1,7 @@
 package tn.esprit.se.pispring.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,10 @@ import tn.esprit.se.pispring.DTO.Request.AddUserRequest;
 import tn.esprit.se.pispring.DTO.Response.PageResponse;
 import tn.esprit.se.pispring.DTO.Response.UserResponse;
 import tn.esprit.se.pispring.Service.UserService;
+import tn.esprit.se.pispring.Service.UserStatisticsService;
+import tn.esprit.se.pispring.entities.Project;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -57,6 +62,15 @@ public class UsersController {
         }catch (Exception e) {
             throw new Exception(e);
         }
+    }
+
+    @PostMapping("/ban")
+    public ResponseEntity<?> banUserByEmail(@RequestParam("email") String email) {
+        // Ban the user using the service method
+        userService.banUserByEmail(email);
+
+        // Return a success response
+        return ResponseEntity.ok("User with email " + email + " has been banned.");
     }
 
 

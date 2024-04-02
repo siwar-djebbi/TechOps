@@ -50,7 +50,7 @@ public class SecurityConfiguration {
                 .authenticationEntryPoint((request, response, exception) -> {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
                 }).and()
-                .authorizeRequests().antMatchers("/**/**")
+                .authorizeRequests().antMatchers("/auth/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

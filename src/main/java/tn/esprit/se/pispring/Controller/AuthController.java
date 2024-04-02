@@ -3,6 +3,7 @@ package tn.esprit.se.pispring.Controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,7 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import tn.esprit.se.pispring.DTO.Request.AuthenticationRequest;
 import tn.esprit.se.pispring.DTO.Request.UserSignupRequest;
 import tn.esprit.se.pispring.DTO.Response.AuthenticationResponse;
+import tn.esprit.se.pispring.DTO.Response.ProjectResponse;
+import tn.esprit.se.pispring.DTO.Response.UserResponse;
 import tn.esprit.se.pispring.Service.UserService;
+import tn.esprit.se.pispring.Service.UserStatisticsService;
+import tn.esprit.se.pispring.entities.Project;
 import tn.esprit.se.pispring.entities.User;
 import tn.esprit.se.pispring.secConfig.JwtUtils;
 
@@ -41,6 +46,9 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserStatisticsService userStatisticsService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody UserSignupRequest userReq) throws Exception {
@@ -113,5 +121,26 @@ public class AuthController {
         return oldToken;
     }
 
+//    @GetMapping("/{userId}/task-count-per-project")
+//    public ResponseEntity<Map<ProjectResponse, Integer>> getTaskCountPerProject(@PathVariable Long userId) {
+//        Map<ProjectResponse, Integer> taskCountPerProject = userStatisticsService.getTaskCountPerProject(userId);
+//        if (taskCountPerProject == null) {
+//            // Gérer le cas où l'utilisateur n'existe pas
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        return new ResponseEntity<>(taskCountPerProject, HttpStatus.OK);
+//    }
+
+    @GetMapping("/task-count-per-project")
+    public ResponseEntity<Map<UserResponse, Map<ProjectResponse, Integer>>> getUserTaskCountPerProject() {
+        Map<UserResponse, Map<ProjectResponse, Integer>> userTaskCountPerProject = userStatisticsService.getUserTaskCountPerProject();
+        return new ResponseEntity<>(userTaskCountPerProject, HttpStatus.OK);
+    }
+
+    @GetMapping("/user-count")
+    public ResponseEntity<Map<String, Integer>> getUserCountPerProject() {
+        Map<String, Integer> userCountPerProject = userStatisticsService.getUserCountPerProject();
+        return new ResponseEntity<>(userCountPerProject, HttpStatus.OK);
+    }
 
 }

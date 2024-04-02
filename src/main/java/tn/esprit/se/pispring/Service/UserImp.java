@@ -9,20 +9,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tn.esprit.se.pispring.DTO.Request.*;
-import tn.esprit.se.pispring.DTO.Response.CurrentUserResponse;
-import tn.esprit.se.pispring.DTO.Response.PageResponse;
-import tn.esprit.se.pispring.DTO.Response.UserResponse;
+import tn.esprit.se.pispring.DTO.Response.*;
 import tn.esprit.se.pispring.Repository.RoleRepo;
 import tn.esprit.se.pispring.Repository.UserRepository;
-import tn.esprit.se.pispring.entities.ERole;
-import tn.esprit.se.pispring.entities.Role;
-import tn.esprit.se.pispring.entities.User;
+import tn.esprit.se.pispring.entities.*;
 import tn.esprit.se.pispring.secConfig.JwtUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -97,7 +90,8 @@ public class UserImp implements UserService {
                     user.getId(),
                     user.getFirstName(),
                     user.getLastName(),
-                    user.getEmail()
+                    user.getEmail(),
+                    user.getRoles().stream().map(role ->  role.getRoleName().toString()).toList()
             );
         }catch (Exception e) {
             throw new Exception(e);
@@ -120,7 +114,8 @@ public class UserImp implements UserService {
                     savedUser.getId(),
                     savedUser.getFirstName(),
                     savedUser.getLastName(),
-                    savedUser.getEmail()
+                    savedUser.getEmail(),
+                    savedUser.getRoles().stream().map(role ->  role.getRoleName().toString()).toList()
             );
         }catch (Exception e) {
             throw new Exception(e);
@@ -180,7 +175,9 @@ public class UserImp implements UserService {
                             user.getFirstName(),
                             user.getLastName(),
                             user.getEmail(),
-                            user.getTelephone() // Assuming role should always be "user"
+                            user.getTelephone(),
+                            user.getRoles().stream().map(role1 -> role1.getRoleName().toString()).toList()
+                            // Assuming role should always be "user"
                     ))
                     .collect(Collectors.toList());
 
@@ -229,7 +226,7 @@ public class UserImp implements UserService {
 
 
         PageResponse<UserResponse> response = new PageResponse<>();
-        response.setContent(result.getContent().stream().map(user -> new UserResponse(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getTelephone())).toList());
+        response.setContent(result.getContent().stream().map(user -> new UserResponse(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getTelephone(),user.getRoles().stream().map(role1 -> role1.getRoleName().toString()).toList())).toList());
         response.setPageNumber(result.getNumber());
         response.setTotalElements(result.getTotalElements());
         response.setTotalPages(response.getTotalPages());
@@ -250,8 +247,172 @@ public class UserImp implements UserService {
 
         User saved = userRepository.save(user);
 
-        return new UserResponse(saved.getId(), saved.getFirstName(), saved.getLastName(), saved.getEmail(), saved.getTelephone());
+        return new UserResponse(saved.getId(), saved.getFirstName(), saved.getLastName(), saved.getEmail(), saved.getTelephone(),saved.getRoles().stream().map(role1 -> role1.getRoleName().toString()).toList());
     }
+
+    @Override
+    public void banUserByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            user.setEnabled(false);
+            userRepository.save(user);
+        }
+    }
+
+    @Override
+    public Map<TaskStatus, Integer> getTasksByStatus(Long userId) {
+        // Retrieve user's tasks from the database
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
+            return null; // Handle case where user is not found
+        }
+
+        User user = optionalUser.get();
+        Set<Task> tasks = user.getTasks();
+
+        // Organize tasks by status
+        Map<TaskStatus, Integer> tasksByStatus = new HashMap<>();
+        for (Task task : tasks) {
+            TaskStatus status = task.getTaskStatus();
+            tasksByStatus.put(status, tasksByStatus.getOrDefault(status, 0) + 1);
+        }
+
+        return tasksByStatus;
+    }
+
+    @Override
+        public List<ProjectUserTask> getUsersPerProjectAndTasks() {
+
+            List<ProjectUserTask> projectUserTasks = new ArrayList<>();
+
+            // Iterate through users
+            for (User user : userRepository.findAll()) {
+                ProjectUserTask projectUserTask = new ProjectUserTask();
+                projectUserTask.setUserWithTaskStatus(createUserWithTaskStatus(user));
+                // Set project name if available
+                // projectUserTask.setProjectName(user.getProject().getName());
+
+                projectUserTasks.add(projectUserTask);
+            }
+
+            return projectUserTasks;
+    }
+        private UserWithTaskStatus createUserWithTaskStatus(User user) {
+            UserWithTaskStatus userWithTaskStatus = new UserWithTaskStatus();
+            userWithTaskStatus.setUser(user);
+            userWithTaskStatus.setTasksByStatus(getTasksByStatus(user));
+
+            return userWithTaskStatus;
+        }
+        private Map<TaskStatus, Integer> getTasksByStatus(User user) {
+            Map<TaskStatus, Integer> tasksByStatus = new HashMap<>();
+
+            // Count tasks by status for the user
+            for (Task task : user.getTasks()) {
+                TaskStatus status = task.getTaskStatus();
+                tasksByStatus.put(status, tasksByStatus.getOrDefault(status, 0) + 1);
+            }
+
+            return tasksByStatus;
+        }
+
+    @Override
+    public Map<String, Object> getUsersTaskStatus() {
+        List<User> users = userRepository.findAll();
+
+        // Filter users with the role ROLE_USER
+        List<User> usersWithRoleUser = users.stream()
+                .filter(user -> user.getRoles().stream()
+                        .anyMatch(role -> role.getRoleName() == ERole.ROLE_USER))
+                .collect(Collectors.toList());
+
+        int totalUsers = usersWithRoleUser.size();
+
+        int usersWithAllTasksCompleted = 0;
+        int usersWithIncompleteTasks = 0;
+
+        for (User user : usersWithRoleUser) {
+            boolean allTasksCompleted = true;
+            for (Task task : user.getTasks()) {
+                if (task.getTaskStatus() != TaskStatus.COMPLETED) {
+                    allTasksCompleted = false;
+                    break;
+                }
+            }
+            if (allTasksCompleted) {
+                usersWithAllTasksCompleted++;
+            } else {
+                usersWithIncompleteTasks++;
+            }
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalUsers", totalUsers);
+        result.put("usersWithAllTasksCompleted", usersWithAllTasksCompleted);
+        result.put("usersWithIncompleteTasks", usersWithIncompleteTasks);
+
+        return result;
+    }
+
+    @Override
+    public List<UserTaskCountDTO> getUsersWithTaskStatus() {
+        List<User> users = userRepository.findAll();
+        List<UserTaskCountDTO> userTaskCountDTOs = new ArrayList<>();
+
+        for (User user : users) {
+            int completedTasks = 0;
+            int incompleteTasks = 0;
+
+            for (Task task : user.getTasks()) {
+                if (task.getTaskStatus() == TaskStatus.COMPLETED ||task.getTaskStatus() == TaskStatus.CANCELLED) {
+                    completedTasks++;
+                } else {
+                    incompleteTasks++;
+                }
+            }
+
+            UserTaskCountDTO dto = new UserTaskCountDTO();
+            dto.setFirstName(user.getFirstName());
+            dto.setLastName(user.getLastName());
+            dto.setCompletedTasks(completedTasks);
+            dto.setIncompleteTasks(incompleteTasks);
+
+            userTaskCountDTOs.add(dto);
+        }
+
+        return userTaskCountDTOs;
+    }
+    @Override
+    public List<UserTasksDTO> getUsersTasksWithCount() {
+        List<User> users = userRepository.findAll();
+        List<UserTasksDTO> usersTasksDTOList = new ArrayList<>();
+
+        for (User user : users) {
+            UserTasksDTO userTasksDTO = new UserTasksDTO();
+            userTasksDTO.setFirstName(user.getFirstName());
+            userTasksDTO.setLastName(user.getLastName());
+
+            Map<TaskStatus, Integer> tasksByStatus = new HashMap<>();
+            for (Task task : user.getTasks()) {
+                TaskStatus status = task.getTaskStatus();
+                tasksByStatus.put(status, tasksByStatus.getOrDefault(status, 0) + 1);
+            }
+
+            List<TaskStatusCountDTO> tasksDTOList = new ArrayList<>();
+            for (Map.Entry<TaskStatus, Integer> entry : tasksByStatus.entrySet()) {
+                TaskStatusCountDTO taskStatusCountDTO = new TaskStatusCountDTO();
+                taskStatusCountDTO.setStatus(entry.getKey());
+                taskStatusCountDTO.setCount(entry.getValue());
+                tasksDTOList.add(taskStatusCountDTO);
+            }
+
+            userTasksDTO.setTasks(tasksDTOList);
+            usersTasksDTOList.add(userTasksDTO);
+        }
+
+        return usersTasksDTOList;
+    }
+
 
 
 }

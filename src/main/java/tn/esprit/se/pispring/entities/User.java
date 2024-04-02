@@ -12,7 +12,7 @@ import static javax.persistence.FetchType.EAGER;
 @Builder
 @Getter
 @Setter
-@ToString
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -35,6 +35,7 @@ public class User {
     private Boolean connected = false;
     private boolean deleted = false;
     private boolean enabled= true;
+
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     private Set<Recruitment> Recruitments;

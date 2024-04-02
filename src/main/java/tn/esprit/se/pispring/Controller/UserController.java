@@ -4,24 +4,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.se.pispring.DTO.Request.*;
-import tn.esprit.se.pispring.DTO.Response.CurrentUserResponse;
-import tn.esprit.se.pispring.DTO.Response.UserResponse;
+import tn.esprit.se.pispring.DTO.Response.*;
 import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.Service.RoleService;
 import tn.esprit.se.pispring.Service.UserService;
 import tn.esprit.se.pispring.entities.Role;
 import tn.esprit.se.pispring.entities.ERole;
+import tn.esprit.se.pispring.entities.TaskStatus;
 import tn.esprit.se.pispring.entities.User;
 import tn.esprit.se.pispring.events.NewUserAddedEvent;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins ="http://localhost:4200")
 @RestController
@@ -49,7 +51,7 @@ public class UserController {
             }
             Role role = roleService.findRoleByRoleName(ERole.ROLE_USER);
             assert newUser != null;
-            return ResponseEntity.ok(new UserResponse(newUser.getId(),newUser.getFirstName(), newUser.getFirstName(), newUser.getEmail(),  newUser.getTelephone()));
+            return ResponseEntity.ok(new UserResponse(newUser.getId(),newUser.getFirstName(), newUser.getFirstName(), newUser.getEmail(),  newUser.getTelephone(),newUser.getRoles().stream().map(role1 -> role1.getRoleName().toString()).toList()));
 
         }catch (Exception e) {
             throw new Exception(e);
@@ -57,14 +59,23 @@ public class UserController {
     }
 
     @GetMapping("/getCurrent")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
     public ResponseEntity<?> getCurrentUserInfos(@RequestHeader(name = "Authorization") String token) throws Exception {
         try {
+            log.error(token);
+            log.error("#######################");
+            log.error("####################3##");
             CurrentUserResponse user = userService.getCurrentUserInfos(token);
             return ResponseEntity.ok(user);
         }catch (Exception e) {
             throw new Exception(e);
         }
     }
+
+//    @GetMapping("/getCurrent")
+//    public ResponseEntity<?> test () {
+//        return ResponseEntity.ok("hello word");
+//    }
 
     @PutMapping("/editCurrent")
     public ResponseEntity<?> editCurrent(@RequestHeader(name = "Authorization") String token, @RequestBody CurrentUserRequest request) throws Exception {
@@ -138,5 +149,40 @@ public class UserController {
         }
 
     }
+
+//    @GetMapping("/{userId}/tasks-by-status")
+//    public ResponseEntity<Map<TaskStatus, Integer>> getTasksByStatus(@PathVariable Long userId) {
+//        Map<TaskStatus, Integer> tasksByStatus = userService.getTasksByStatus(userId);
+//        if (tasksByStatus == null) {
+//            // Handle case where user is not found
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        return new ResponseEntity<>(tasksByStatus, HttpStatus.OK);
+//    }
+
+//    @GetMapping("/users-per-project-and-tasks")
+//    public ResponseEntity<List<ProjectUserTask>> getUsersPerProjectAndTasks() {
+//        List<ProjectUserTask> result = userService.getUsersPerProjectAndTasks();
+//        return ResponseEntity.ok(result);
+//    }
+    @GetMapping("/user-task-status")
+    public ResponseEntity<List<UserTaskCountDTO>> getUsersWithTaskStatus() {
+        List<UserTaskCountDTO> userTaskCountDTOs = userService.getUsersWithTaskStatus();
+        return new ResponseEntity<>(userTaskCountDTOs, HttpStatus.OK);
+    }
+
+    @GetMapping("/task-status")
+    public ResponseEntity<Map<String, Object>> getUsersTaskStatus() {
+        Map<String, Object> result = userService.getUsersTaskStatus();
+        return ResponseEntity.ok(result);
+    }
+    @GetMapping("/tasks-by-status")
+    public ResponseEntity<List<UserTasksDTO>> getUsersTasksWithCount() {
+        List<UserTasksDTO> usersTasksDTOList = userService.getUsersTasksWithCount();
+        return new ResponseEntity<>(usersTasksDTOList, HttpStatus.OK);
+    }
+
+
+
 
 }
