@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.*;
 import tn.esprit.se.pispring.DTO.Request.AuthenticationRequest;
 import tn.esprit.se.pispring.DTO.Request.UserSignupRequest;
 import tn.esprit.se.pispring.DTO.Response.AuthenticationResponse;
