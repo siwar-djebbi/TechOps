@@ -1,8 +1,6 @@
 package tn.esprit.se.pispring.entities;
 
 import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.Date;
@@ -11,6 +9,7 @@ import java.util.Set;
 @Builder
 @Getter
 @Setter
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -20,25 +19,17 @@ public class Task {
     private Long task_id;
     private String task_name;
     @Temporal(TemporalType.DATE)
-    private Date taskStartdate;
+    private Date task_startdate;
     @Temporal(TemporalType.DATE)
-    private Date taskEnddate;
+    private Date task_enddate;
     private String task_description;
     @Enumerated(EnumType.STRING)
     private TaskStatus taskStatus;
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Resources> resourcess;
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "tasks")
-    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.ALL)
     private Set<User> users;
     @ManyToOne
-    @JsonIgnore
-    private Project project;
+    Project project;
 
-    @Override
-    public String toString() {
-        return "Task{" +
-                "task_id=" + task_id +
-                '}';
-    }
 }

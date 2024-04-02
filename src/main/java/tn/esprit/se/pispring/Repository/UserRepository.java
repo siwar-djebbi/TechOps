@@ -28,11 +28,11 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query("select u from User u where u.portfolio = :portfolios and u.deleted = false")
     List<User> findUsers(Portfolio portfolios);
 
-   
+    @Query("select u from User u where (u.firstName like concat(:keyword, '%')" +
+            " or u.lastName like concat(:keyword, '%') or u.email like concat(:keyword, '%'))" +
+            " and u.deleted = false")
+    List<User> searchUsers(String keyword);
+
     @Query("select u from User u where ( u.firstName like concat(:searchTerm, '%') or u.lastName like concat(:searchTerm, '%') or u.email like concat(:searchTerm, '%') or u.telephone like concat(:searchTerm, '%'))")
     Page<User> searchBy(PageRequest pageRequest, String searchTerm);
-    @Query("select u from User u where (u.firstName like concat(:keyword, '%') or u.lastName like concat(:keyword, '%') or u.email like concat(:keyword, '%')) and u.portfolio = :portfolios and u.deleted = false")
-    List<User> searchUsers(String keyword, Portfolio portfolios);
-
-
 }
