@@ -63,7 +63,7 @@ public class AuthController {
 
     }
 
-    @PostMapping("/signin")
+    @PostMapping()
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest authenticationRequest, final HttpServletResponse response) throws Exception {
 
         try {
