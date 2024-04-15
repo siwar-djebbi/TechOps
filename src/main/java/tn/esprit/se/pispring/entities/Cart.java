@@ -5,7 +5,9 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -18,19 +20,25 @@ import java.util.Set;
 public class Cart {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long cart_id;
+    private Long cartId;
     @Temporal(TemporalType.DATE)
-    private Date datelastitem;
-    private Float cart_amount;
-    private Integer cart_items_number;
+    private Date dateLastItem;
+    private Float cartAmount;
+    private Integer numberOfItems;
 
 
-    @ManyToOne
-    User user;
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Set<Product> products;
+    @JsonIgnore
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products = new ArrayList<>();
 
     @OneToOne
     private Command command;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> items = new ArrayList<>();
+
+    public List<CartItem> getCartItems() {
+        return items;
+    }
+
 }

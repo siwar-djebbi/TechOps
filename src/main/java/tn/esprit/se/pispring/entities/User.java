@@ -1,7 +1,11 @@
 package tn.esprit.se.pispring.entities;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import tn.esprit.se.pispring.entities.Rating.LikeDislike;
+import tn.esprit.se.pispring.entities.Rating.Review;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,9 +65,6 @@ public class User {
     @ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
     private Set<Task> tasks;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
-    private Set<Command> Commands;
-
     //@OneToOne(mappedBy="portfolio")
     //private Consultant consultant;
 
@@ -72,4 +73,14 @@ public class User {
 
     @OneToOne
     private CustomerTracking customertracking;
+
+//DHOUUUUUUUUUUUUUUUUUUHA
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
+    private Set<Command> Commands;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    List<Review> reviews;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<LikeDislike> likeDislikeProductList;
 }

@@ -52,7 +52,7 @@ public class SecurityConfiguration {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
                 }).and()
 
-                .authorizeRequests().antMatchers("/**")
+                .authorizeRequests().antMatchers("/**","/product/**","/cart/**","/review/**","/command/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

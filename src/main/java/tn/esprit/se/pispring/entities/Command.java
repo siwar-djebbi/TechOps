@@ -1,5 +1,6 @@
 package tn.esprit.se.pispring.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,6 +27,7 @@ public class Command {
     @Enumerated(EnumType.STRING)
     private CommandPayment commandPayment;
     @ManyToOne
+    @JsonIgnore
     User user;
     @OneToOne(mappedBy="command")
     private Cart cart;
