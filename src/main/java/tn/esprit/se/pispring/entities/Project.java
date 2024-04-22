@@ -24,6 +24,7 @@ public class Project {
     @Enumerated(EnumType.STRING)
     private ProjectStatus projectStatus;
     @OneToMany(cascade = CascadeType.ALL, mappedBy="project")
+    @JsonIgnore
     private Set<Task> Tasks;
     @OneToOne
     @JsonIgnore
