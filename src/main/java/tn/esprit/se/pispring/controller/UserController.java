@@ -60,11 +60,13 @@ public class UserController {
 
     @GetMapping("/getCurrent")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
+    //@PreAuthorize("hasAuthority('ROLE_ADMIN_READ')")
+
     public ResponseEntity<?> getCurrentUserInfos(@RequestHeader(name = "Authorization") String token) throws Exception {
         try {
-            log.error(token);
-            log.error("#######################");
-            log.error("####################3##");
+            log.info(token);
+            log.info("#######################");
+            log.info("####################3##");
             CurrentUserResponse user = userService.getCurrentUserInfos(token);
             return ResponseEntity.ok(user);
         }catch (Exception e) {

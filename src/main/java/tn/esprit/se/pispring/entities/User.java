@@ -36,6 +36,10 @@ public class User {
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns  = @JoinColumn(name = "role_id"))
     private List<Role> roles = new ArrayList<>();
 
+//    @ManyToMany(fetch = EAGER)
+//    @JoinTable(name = "user_permissions", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns  = @JoinColumn(name = "permission_id"))
+//    private List<Permission> permissions = new ArrayList<>();
+
     private Boolean connected = false;
     private boolean deleted = false;
     private boolean enabled= true;
