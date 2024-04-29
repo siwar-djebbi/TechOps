@@ -38,4 +38,6 @@ public interface ITaskService {
     List<Task> findTasksCompletedBeforeEndDate(Date endDate);
 
     List<Task> findTasksCompletedLate();
+
+    Task assignTaskToResource(Long taskId, Long resourceId);
 }

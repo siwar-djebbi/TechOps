@@ -1,8 +1,11 @@
 package tn.esprit.se.pispring.entities;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
+import java.util.Date;
 import java.util.Set;
 
 @Builder
@@ -15,16 +18,22 @@ import java.util.Set;
 public class Resources {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long resource_id;
-    private String resource_name;
-    private String resources_description;
+    @Column(name = "resourceId")
+    private Long resourceId;
+    private String resourceName;
+    private String resourcesDescription;
     @Enumerated(EnumType.STRING)
     private ResourceType resourceType;
-    private Float resources_cost;
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "task_resourcess",
-            joinColumns = @JoinColumn(name = "resourcess_resource_id"),
-            inverseJoinColumns = @JoinColumn(name = "tasks_task_id"))
+    private Float resourcesCost;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at")
+    private Date createdAt;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated_at")
+    private Date updatedAt;
+    @ManyToMany( cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Task> tasks;
+
 }

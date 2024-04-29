@@ -14,10 +14,7 @@ import tn.esprit.se.pispring.DTO.Response.*;
 import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.Service.RoleService;
 import tn.esprit.se.pispring.Service.UserService;
-import tn.esprit.se.pispring.entities.Role;
-import tn.esprit.se.pispring.entities.ERole;
-import tn.esprit.se.pispring.entities.TaskStatus;
-import tn.esprit.se.pispring.entities.User;
+import tn.esprit.se.pispring.entities.*;
 import tn.esprit.se.pispring.events.NewUserAddedEvent;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +37,11 @@ public class UserController {
     private final RoleService roleService;
 
 
+    @GetMapping("/retrieve-all-user")
+    public List<User> getuser() {
+        List<User> users = userService.getAlluser();
+        return users;
+    }
     @PostMapping("/create")
     //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
     public ResponseEntity<?> createNewUser(final HttpServletRequest request, @RequestHeader(name = "Authorization") String token, @RequestBody @Valid UserRequest userRequest) throws Exception {
