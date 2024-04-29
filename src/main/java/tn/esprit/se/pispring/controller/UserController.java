@@ -41,7 +41,7 @@ public class UserController {
 
 
     @PostMapping("/create")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
+    //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
     public ResponseEntity<?> createNewUser(final HttpServletRequest request, @RequestHeader(name = "Authorization") String token, @RequestBody @Valid UserRequest userRequest) throws Exception {
         try {
             User newUser = userService.createNewUser(token, userRequest);
@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @GetMapping("/getCurrent")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
+   // @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
     public ResponseEntity<?> getCurrentUserInfos(@RequestHeader(name = "Authorization") String token) throws Exception {
         try {
             log.error(token);
@@ -98,7 +98,7 @@ public class UserController {
     }
 
     @GetMapping("/alll")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
+    //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
     public ResponseEntity<?> getUsers(@RequestHeader(name = "Authorization") String token) throws Exception {
         try {
             List<UserResponse> users = userService.getUsers(token);
@@ -127,7 +127,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
+    //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
     public Iterable<User> findConnectedUsers() {
         return userRepo.findAll();
     }
@@ -180,6 +180,11 @@ public class UserController {
     public ResponseEntity<List<UserTasksDTO>> getUsersTasksWithCount() {
         List<UserTasksDTO> usersTasksDTOList = userService.getUsersTasksWithCount();
         return new ResponseEntity<>(usersTasksDTOList, HttpStatus.OK);
+    }
+    @GetMapping("/retrieve-all-users")
+    public List<User> getAllUsers() {
+        List<User> listUsers = userService.getAllUsers();
+        return listUsers;
     }
 
 

@@ -3,6 +3,7 @@ package tn.esprit.se.pispring.Service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tn.esprit.se.pispring.DTO.Response.PayrollDTO;
 import tn.esprit.se.pispring.Repository.PayrollRepository;
 import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.entities.Payroll;
@@ -10,7 +11,10 @@ import tn.esprit.se.pispring.entities.PayrollConfig;
 import tn.esprit.se.pispring.entities.Prime;
 import tn.esprit.se.pispring.entities.User;
 
-import java.util.List;
+import java.time.Month;
+import java.time.format.TextStyle;
+import java.util.*;
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -23,8 +27,60 @@ public class PayrollImp implements PayrollService {
 
 
     @Override
-    public List<Payroll> retrieveAllPayrolls() {
-        return payrollRepository.findAll();
+    public List<PayrollDTO> retrieveAllPayrolls() {
+        List<Payroll> payrollList = payrollRepository.findAll();
+        List<PayrollDTO> payrollDTOList = new ArrayList<>();
+        for (Payroll payroll: payrollList
+             ) {
+            PayrollDTO payrollDTO = new PayrollDTO();
+            payrollDTO.setPayroll_id(payroll.getPayroll_id());
+            payrollDTO.setNet_salary(payroll.getNet_salary());
+            payrollDTO.setMonth(payroll.getMonth());
+            payrollDTO.setCategory(payroll.getCategory());
+            payrollDTO.setSeniority(payroll.getSeniority());
+            payrollDTO.setYear(payroll.getYear());
+            payrollDTO.setBank_name(payroll.getBank_name());
+            payrollDTO.setAccount_number(payroll.getAccount_number());
+            payrollDTO.setBase_salary(payroll.getBase_salary());
+            payrollDTO.setPayment_method(payroll.getPayment_method());
+            payrollDTO.setBrut_salary(payroll.getBrut_salary());
+            payrollDTO.setWork_hours_number(payroll.getWork_hours_number());
+            payrollDTO.setUser_name(payroll.getUser().getFirstName()+" "+payroll.getUser().getLastName());
+            payrollDTOList.add(payrollDTO);
+        }
+        return payrollDTOList;
+    }
+
+    @Override
+    public Set<PayrollDTO> getPayrollsByUser(Long userId) {
+        User user = userRepository.findById(userId).get();
+        Set<Payroll> payrollSet = user.getPayrolls();
+        Set<PayrollDTO> payrollDTOList = new HashSet<>();
+        for (Payroll payroll: payrollSet
+        ) {
+            PayrollDTO payrollDTO = new PayrollDTO();
+            payrollDTO.setPayroll_id(payroll.getPayroll_id());
+            payrollDTO.setNet_salary(payroll.getNet_salary());
+            payrollDTO.setMonth(payroll.getMonth());
+            payrollDTO.setCategory(payroll.getCategory());
+            payrollDTO.setSeniority(payroll.getSeniority());
+            payrollDTO.setYear(payroll.getYear());
+            payrollDTO.setBank_name(payroll.getBank_name());
+            payrollDTO.setAccount_number(payroll.getAccount_number());
+            payrollDTO.setBase_salary(payroll.getBase_salary());
+            payrollDTO.setPayment_method(payroll.getPayment_method());
+            payrollDTO.setBrut_salary(payroll.getBrut_salary());
+            payrollDTO.setWork_hours_number(payroll.getWork_hours_number());
+            payrollDTO.setUser_name(payroll.getUser().getFirstName()+" "+payroll.getUser().getLastName());
+            payrollDTOList.add(payrollDTO);
+        }
+        return payrollDTOList;
+    }
+
+    public String getPayrollUser(Long idpayroll) {
+        Payroll p = payrollRepository.findById(idpayroll).get();
+        User user = p.getUser();
+        return user.getFirstName()+" "+user.getLastName();
     }
 
     @Override
@@ -54,6 +110,33 @@ public class PayrollImp implements PayrollService {
         payrollRepository.deleteById(idPayroll);
     }
 
+    @Override
+    public Map<String, Float> calculateTotalExpensesByMonth(int year) {
+        Map<String, Float> monthlyExpenses = new LinkedHashMap<>();
+
+        for (int month = 1; month <= 12; month++) {
+            String monthName = getMonthName(month);
+            Float totalExpenses = payrollRepository.calculateTotalExpensesByYearAndMonth(year, monthName);
+            monthlyExpenses.put(monthName, totalExpenses);
+        }
+
+        return monthlyExpenses;
+    }
+    public Map<String, Float> calculateTotalExpensesByUser(int year) {
+        Map<String, Float> employeeExpenses = new LinkedHashMap<>();
+        List<User> users = userRepository.findAll();
+        for (User user: users
+        ) {
+            Float totalExpense = payrollRepository.calculateTotalExpensesByYearAndUser(year, user);
+            employeeExpenses.put(user.getFirstName()+" "+user.getLastName(), totalExpense);
+        }
+        return employeeExpenses;
+    }
+    private String getMonthName(int month) {
+        return Month.of(month).getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+    }
+
+
     public Payroll affectPayrollUser(Payroll payroll, Long userId) {
         User user = userRepository.findById(userId).get();
         Float prime = primeService.getSumAmountForUserMonthYear(userId,payroll.getMonth(), payroll.getYear());
@@ -79,8 +162,18 @@ public class PayrollImp implements PayrollService {
         return netSalary;
     }
 
-    public List<Object[]> getPayrollDetailsForYear(Integer year) {
-        return payrollRepository.getPayrollDetailsForYear(year);
+    public Map<Integer, Double> getTotalExpensesByYearRange(Integer startYear, Integer endYear) {
+        List<Object[]> expensesByYear = payrollRepository.calculateTotalExpensesByYearRange(startYear, endYear);
+        Map<Integer, Double> expensesMap = new HashMap<>();
+        for (Object[] result : expensesByYear) {
+            Integer year = (Integer) result[0];
+            Double totalExpenses = (Double) result[1];
+            expensesMap.put(year, totalExpenses);
+        }
+        return expensesMap;
     }
+
+
+
 }
 

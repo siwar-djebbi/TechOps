@@ -10,6 +10,7 @@ import tn.esprit.se.pispring.Service.ContributionService;
 import tn.esprit.se.pispring.Service.PrimeService;
 import tn.esprit.se.pispring.entities.Contribution;
 import tn.esprit.se.pispring.entities.Payroll;
+import tn.esprit.se.pispring.entities.PayrollConfig;
 import tn.esprit.se.pispring.entities.Prime;
 
 import java.awt.*;
@@ -27,7 +28,7 @@ public class GeneratePdfPayroll {
 
     //private static final Logger logger = (Logger) LoggerFactory.getLogger(GeneratePdfPayroll.class);
 
-    public  ByteArrayInputStream payrollReport(Payroll payroll, List<Prime> primes, List<Contribution> contributions) {
+    public  ByteArrayInputStream payrollReport(Payroll payroll, List<Prime> primes, List<Contribution> contributions, PayrollConfig payrollConfig) {
 
         Document document = new Document();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -119,6 +120,25 @@ public class GeneratePdfPayroll {
             cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             cell.setPaddingRight(5);
             table.addCell(cell);
+
+            if(payroll.getWork_hours_number()>payrollConfig.getMonth_days()){
+                cell = new PdfPCell(new Phrase("Extra days"));
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                table.addCell(cell);
+
+                cell = new PdfPCell(new Phrase(String.valueOf(payroll.getWork_hours_number() - payrollConfig.getMonth_days())));
+                cell.setPaddingLeft(5);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                table.addCell(cell);
+
+                cell = new PdfPCell(new Phrase(""));
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                cell.setPaddingRight(5);
+                table.addCell(cell);
+            }
 
                 cell = new PdfPCell(new Phrase("Base Salary"));
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);

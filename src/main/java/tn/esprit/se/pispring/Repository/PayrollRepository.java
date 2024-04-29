@@ -15,4 +15,13 @@ public interface PayrollRepository extends JpaRepository<Payroll,Long> {
     @Query("SELECT p.user.firstName,p.user.lastName, p.brut_salary, p.net_salary, p.month, p.year FROM Payroll p WHERE p.year = :year")
     List<Object[]> getPayrollDetailsForYear(@Param("year") Integer year);
 
+    @Query("SELECT SUM(p.brut_salary) FROM Payroll p WHERE p.year = :year AND p.month = :month")
+    Float calculateTotalExpensesByYearAndMonth(@Param("year") Integer year, @Param("month") String month);
+
+    @Query("SELECT SUM(p.brut_salary) FROM Payroll p WHERE p.year = :year AND p.user = :user")
+    Float calculateTotalExpensesByYearAndUser(@Param("year") Integer year, @Param("user") User user);
+    @Query("SELECT p.year, SUM(p.brut_salary) FROM Payroll p WHERE p.year BETWEEN :startYear AND :endYear GROUP BY p.year")
+    List<Object[]> calculateTotalExpensesByYearRange(@Param("startYear") Integer startYear, @Param("endYear") Integer endYear);
+
+
 }
