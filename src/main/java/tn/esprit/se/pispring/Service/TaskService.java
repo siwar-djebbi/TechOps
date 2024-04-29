@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tn.esprit.se.pispring.Repository.ProjectRepository;
+import tn.esprit.se.pispring.Repository.ResourceRepository;
 import tn.esprit.se.pispring.Repository.TaskRepository;
 import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.entities.*;
@@ -17,14 +18,11 @@ import java.util.*;
 @Slf4j
 @AllArgsConstructor
 public class TaskService implements ITaskService{
-    @Autowired
-    TaskRepository taskRepository;
-    @Autowired
-    ProjectRepository projectRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    ProjectService projectService;
+    private final TaskRepository taskRepository;
+    private final ResourceRepository resourcesRepository;
+    private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
+
     @Override
     public Task addTask(Task task) {
         return taskRepository.save(task);
@@ -75,6 +73,7 @@ public class TaskService implements ITaskService{
         return null;
     }
     @Override
+    @Transactional
     public Set<User> getProjectTeam(Long projectId) {
         Set<User> users= new HashSet<>();
         taskRepository.findTasksByProjectProjectId(projectId).forEach(task->users.addAll(task.getUsers()));
@@ -135,14 +134,17 @@ public class TaskService implements ITaskService{
         double teamSalaryCostPerMonth = 0.0;
         for (User user : users) {
             teamSalaryCostPerMonth += user.getSalaire();
+           // user.getPayrolls();
         }
 
         // Calculer le budget total en multipliant le salaire total par la durée du projet en mois
         double totalBudget = teamSalaryCostPerMonth * projectDurationInMonths;
 
         // Ajouter les coûts fixes des ressources si nécessaire
-        double fixedResourceCost = 10000.0;
-        totalBudget += fixedResourceCost;
+        double totalResourceCost = 0;
+        //double totalResourceCost = iResourceService.calculateTotalCostForProject(projectId);
+
+        totalBudget += totalResourceCost;
 
         return totalBudget;
     }
@@ -205,6 +207,24 @@ public class TaskService implements ITaskService{
     public List<Task> findTasksCompletedLate() {
         Date currentDate = new Date();
         return taskRepository.findByTaskEnddateBeforeAndTaskStatusNot(currentDate, TaskStatus.COMPLETED);
+    }
+
+
+    @Override
+    public Task assignTaskToResource(Long taskId, Long resourceId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
+
+        Resources resource = resourcesRepository.findById(resourceId)
+                .orElseThrow(() -> new RuntimeException("Resource not found with id: " + resourceId));
+
+        task.getResourcess().add(resource);
+          resource.getTasks().add(task);
+
+        taskRepository.save(task);
+        resourcesRepository.save(resource);
+
+        return task;
     }
 ///////////////
     /// @Override

@@ -2,13 +2,23 @@ package tn.esprit.se.pispring.Service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import tn.esprit.se.pispring.Repository.ProjectRepository;
+import tn.esprit.se.pispring.Repository.TaskRepository;
+import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.entities.Project;
 import tn.esprit.se.pispring.entities.ProjectStatus;
+import tn.esprit.se.pispring.entities.Resources;
+import tn.esprit.se.pispring.entities.Task;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,6 +26,14 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ProjectService implements IProjectService{
     ProjectRepository projectRepository;
+    TaskRepository taskRepository;
+
+
+
+    @Autowired
+    private UserRepository userRepository;
+
+
 
 
 
@@ -56,11 +74,7 @@ public class ProjectService implements IProjectService{
 
 
 
-    // @Override
-  // public List<Project> getProjectsByEndDateAndStatus(Date endDate, ProjectStatus status) {
-     //   Date currentDate = new Date();
-     //   return projectRepository.findByProjectEnddateBeforeAndProjectStatusNotAndProjectEnddateBefore(currentDate, status, endDate);
-   // }
+
    @Override
    public List<Project> getCompletedProjects() {
        List<Project> completedProjects = projectRepository.findByProjectStatus(ProjectStatus.COMPLETED);
@@ -71,5 +85,36 @@ public class ProjectService implements IProjectService{
        return completedProjects;
    }
 
+
+
+
+
+
+
+    @Override
+    public Date findLatestTaskEndDate(Project project) {
+        Date latestTaskEndDate = null;
+        // Assurez-vous que la méthode getTasks() renvoie la liste des tâches associées au projet
+        for (Task task : project.getTasks()) {
+            if (latestTaskEndDate == null || task.getTaskEnddate().after(latestTaskEndDate)) {
+                latestTaskEndDate = task.getTaskEnddate();
+            }
+        }
+        return latestTaskEndDate;
+    }
+
+    @Transactional
+    @Override
+    public void updateAllProjectEndDates() {
+        List<Project> projects = projectRepository.findAll();
+
+        for (Project project : projects) {
+            Date latestTaskEndDate = findLatestTaskEndDate(project);
+            if (latestTaskEndDate != null && latestTaskEndDate.after(project.getProjectEnddate())) {
+                project.setProjectEnddate(latestTaskEndDate);
+                projectRepository.save(project);
+            }
+        }
+    }
 
 }

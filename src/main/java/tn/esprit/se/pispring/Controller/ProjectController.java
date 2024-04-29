@@ -109,4 +109,15 @@ public class ProjectController {
         List<Project> completedFutureProjects = iProjectService.getCompletedProjects();
         return ResponseEntity.ok(completedFutureProjects);
     }
+////////////MODIFIER LE ENDdATE SELON LE TASKDATE
+    @PutMapping("/updateEndDates")
+    public ResponseEntity<String> updateProjectEndDates() {
+        try {
+            iProjectService.updateAllProjectEndDates();
+            return ResponseEntity.ok("Les dates de fin des projets ont été mises à jour avec succès.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Une erreur s'est produite lors de la mise à jour des dates de fin des projets.");
+        }
+    }
+
 }

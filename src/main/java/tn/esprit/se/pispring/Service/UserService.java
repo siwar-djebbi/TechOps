@@ -14,6 +14,8 @@ public interface UserService {
 
     String signup(UserSignupRequest userReq) throws Exception;
 
+    List<User> getAlluser();
+
     User findByEmail(String username);
     User createNewUser(String token, UserRequest userRequest) throws Exception;
 
