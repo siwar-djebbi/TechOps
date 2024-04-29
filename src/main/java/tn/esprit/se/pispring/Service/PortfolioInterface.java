@@ -32,4 +32,6 @@ public interface PortfolioInterface {
     Map<PortfolioDomain, Integer> getPortfoliosCountByDomain();
     void desaffectUserToPortfolio(Long userId, Long portfolioId);
     List<User> getUsersByPortfolioId(Long portfolioId) ;
+    List<Portfolio> retrieveAllPortfoliosnonaffectes() ;
+
 }
