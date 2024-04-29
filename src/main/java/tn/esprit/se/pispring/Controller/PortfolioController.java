@@ -32,6 +32,11 @@ public class PortfolioController {
         List<Portfolio> listPortfolios = portfolioService.retrieveAllPortfolios();
         return listPortfolios;
     }
+    @GetMapping("/retrieve-all-portfoliononaffectes")
+    public List<Portfolio> retrieveAllPortfoliosnonaffectes() {
+        List<Portfolio> listPortfolios = portfolioService.retrieveAllPortfoliosnonaffectes();
+        return listPortfolios;
+    }
     @GetMapping("/retrieve-all-user")
     public List<User> getUsers() {
         List<User> listUsers = portfolioService.retrieveAllUsers();
@@ -120,4 +125,10 @@ public class PortfolioController {
     public List<User> getUsersByPortfolioId(@PathVariable Long portfolioId) {
         return portfolioService.getUsersByPortfolioId(portfolioId);
     }
+    @GetMapping("/non-affectes")
+    public ResponseEntity<List<User>> getUsersNonAffectes() {
+        List<User> usersNonAffectes = portfolioService.getUsersNonAffectes();
+        return ResponseEntity.ok(usersNonAffectes);
+    }
+
 }

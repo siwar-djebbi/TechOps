@@ -8,8 +8,7 @@ import tn.esprit.se.pispring.Repository.*;
 import tn.esprit.se.pispring.entities.*;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,6 +22,7 @@ public class PortfolioService implements PortfolioInterface{
     UserRepository getUserRepository ;
     ProjectRepository projectRepository;
     TaskRepository taskRepository ;
+    MeetRepository meetRepository ;
     @Override
     public Portfolio addPortfolio(Portfolio p) {
         return portfilioRepository.save(p);
@@ -136,6 +136,17 @@ public class PortfolioService implements PortfolioInterface{
             portfilioRepository.save(portfolio) ;
         }
     }
+    @Override
+    public List<Portfolio> retrieveAllPortfoliosnonaffectes() {
+        List<Portfolio> allPortfolios = portfilioRepository.findAll();
+
+        // Filtrer les portefeuilles non affectés à aucun consultant
+        List<Portfolio> portfoliosWithoutConsultants = allPortfolios.stream()
+                .filter(portfolio -> portfolio.getConsultant() == null)
+                .collect(Collectors.toList());
+
+        return portfoliosWithoutConsultants;
+    }
 
     @Override
     public int getMeetingsCountThisMonth() {
@@ -195,6 +206,7 @@ public class PortfolioService implements PortfolioInterface{
         if (currentNumberOfClients > 0) {
             portfolio.setNbr_client(currentNumberOfClients - 1);
         }
+        else{ portfolio.setNbr_client(0);}
 
         // Sauvegarder les modifications
         userRepository.save(user);
@@ -306,5 +318,94 @@ public class PortfolioService implements PortfolioInterface{
 
         return portfolioEvolution;
     }
+
+    public List<User> getUsersNonAffectes() {
+        // Récupérer tous les utilisateurs
+        List<User> allUsers = userRepository.findAll();
+
+        // Récupérer tous les portefeuilles
+        List<Portfolio> allPortfolios = portfilioRepository.findAll();
+
+        // Créer un ensemble pour stocker tous les utilisateurs affectés à un portefeuille
+        Set<User> usersInPortfolios = new HashSet<>();
+
+        // Parcourir tous les portefeuilles pour récupérer les utilisateurs affectés
+        for (Portfolio portfolio : allPortfolios) {
+            usersInPortfolios.addAll(portfolio.getUsers());
+        }
+
+        // Liste pour stocker les utilisateurs non affectés
+        List<User> usersNonAffectes = new ArrayList<>();
+
+        // Parcourir tous les utilisateurs
+        for (User user : allUsers) {
+            // Vérifier si l'utilisateur n'est pas affecté à un portefeuille
+            if (!usersInPortfolios.contains(user)) {
+                // Ajouter l'utilisateur à la liste des utilisateurs non affectés
+                usersNonAffectes.add(user);
+            }
+        }
+
+        return usersNonAffectes;
+    }
+
+    // Scheduled method to update meetings weekly
+    @Scheduled(cron = "0 0 0 * * MON") // Runs every Monday
+    public void updateMeetings() {
+        List<Consultant> consultants = consultantRepository.findAll();
+
+        for (Consultant consultant : consultants) {
+
+            //  total duration of meetings for the consultant
+          /*  Duration totalMeetingDuration = consultant.getMeetings().stream()
+                    .filter(meeting -> meeting.getMeetStatus() == MeetStatus.PASSED)
+                    .map(Meeting::getDureeReunion)
+                    .reduce(Duration::plus)
+                    .orElse(Duration.ZERO);*/
+
+            // Update consultant's total meeting duration
+         //   consultant.setDureeTotaleReunions(totalMeetingDuration);
+
+            // Update consultant's number of meetings passed
+            consultant.setNbrPassedMeet(consultant.getMeetings().stream()
+                    .filter(meeting -> meeting.getMeetStatus() == MeetStatus.PASSED)
+                    .count());
+
+            // Update consultant's number of canceled meetings
+            long canceledMeetingsCount = consultant.getMeetings().stream()
+                    .filter(meeting -> meeting.getMeetStatus() == MeetStatus.CANCELED)
+                    .count();
+
+            consultant.setNbrCanceledMeet(consultant.getNbrCanceledMeet() + canceledMeetingsCount);
+
+            consultant.getMeetings().removeIf(meeting -> meeting.getMeetStatus() == MeetStatus.CANCELED);
+
+
+            // Update the date of the last meeting
+            LocalDateTime lastMeetingDate = consultant.getMeetings().stream()
+                    .map(meeting -> Instant.ofEpochMilli(meeting.getMeettdate().getTime())
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDateTime())
+                    .max(LocalDateTime::compareTo)
+                    .orElse(null);
+
+            // Update portfolio's meeting dates
+            Portfolio portfolio = consultant.getPortfolio();
+            if (portfolio != null) {
+                portfolio.setMeeting_dates(consultant.getMeetings().stream()
+                        .filter(meeting -> meeting.getMeetStatus() == MeetStatus.PASSED)
+                        .map(Meeting::getMeettdate)
+                        .collect(Collectors.toList()));
+                portfilioRepository.save(portfolio);
+            }
+
+
+            consultantRepository.save(consultant);
+        }
+
+    }
+
+
+
 
 }

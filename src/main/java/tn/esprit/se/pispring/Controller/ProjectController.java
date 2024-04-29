@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.se.pispring.Service.IProjectService;
 import tn.esprit.se.pispring.Service.ITaskService;
@@ -26,6 +27,7 @@ public class ProjectController {
 
 
     @PostMapping("/addProject")
+    @PreAuthorize("hasAnyRole( 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
     public Project addProject(@RequestBody Project p) {
         Project project = iProjectService.addProject(p);
         return project;

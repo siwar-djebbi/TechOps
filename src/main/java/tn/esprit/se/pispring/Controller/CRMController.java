@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.se.pispring.Service.ConsultantService;
 import tn.esprit.se.pispring.Service.PortfolioService;
@@ -35,6 +36,8 @@ public class CRMController {
     }
 
     @PostMapping("/add-consultant")
+    //@PreAuthorize("hasAnyRole( 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN',  'ROLE_PRODUCT_ADMIN')")
+
     public  Consultant addconsultant(@RequestBody  Consultant c) {
         return consultantService.addConsultant(c) ;
     }

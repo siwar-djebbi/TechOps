@@ -128,7 +128,17 @@ public class runner implements CommandLineRunner {
         projAdmin.setRoles(rolesssss);
         projAdmin.setEmail("projAdmin@email.com");
         userRepo.save(projAdmin);
+// Add a CRM admin
 
+        User crmAdmin = new User();
+        crmAdmin.setFirstName("crm");
+        crmAdmin.setLastName("admin");
+        crmAdmin.setPassword(passwordEncoder.encode("123456789"));
+        List<Role> rolessssss = new ArrayList<>();
+        rolessssss.add(roleRepo.findRoleByRoleName(ERole.ROLE_CRM_ADMIN));
+        crmAdmin.setRoles(rolessssss);
+        crmAdmin.setEmail("crmAdmin@email.com");
+        userRepo.save(crmAdmin);
         // Add a list of users
 
 
