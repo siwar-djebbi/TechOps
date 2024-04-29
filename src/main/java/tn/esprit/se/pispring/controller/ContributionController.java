@@ -1,4 +1,4 @@
-package tn.esprit.se.pispring.controller;
+package tn.esprit.se.pispring.Controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;

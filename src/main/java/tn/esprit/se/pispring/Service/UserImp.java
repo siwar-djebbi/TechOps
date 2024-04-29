@@ -417,6 +417,10 @@ public class UserImp implements UserService {
         return usersTasksDTOList;
     }
 
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
 
 }

@@ -47,4 +47,5 @@ public interface UserService {
     List<UserTaskCountDTO> getUsersWithTaskStatus();
 
     List<UserTasksDTO> getUsersTasksWithCount();
+    List<User> getAllUsers();
 }
