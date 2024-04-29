@@ -1,6 +1,8 @@
 package tn.esprit.se.pispring.entities;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.Date;
@@ -26,10 +28,14 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private TaskStatus taskStatus;
     @ManyToMany(cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Resources> resourcess;
     @ManyToMany(cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<User> users;
     @ManyToOne
+    @JsonIgnore
+    //@JoinColumn(name = "project_id")
     Project project;
 
 }

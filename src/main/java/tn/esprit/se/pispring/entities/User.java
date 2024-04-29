@@ -20,7 +20,7 @@ import static javax.persistence.FetchType.EAGER;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Data
+//@Data
 public class User {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -35,6 +35,10 @@ public class User {
     @ManyToMany(fetch = EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns  = @JoinColumn(name = "role_id"))
     private List<Role> roles = new ArrayList<>();
+
+//    @ManyToMany(fetch = EAGER)
+//    @JoinTable(name = "user_permissions", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns  = @JoinColumn(name = "permission_id"))
+//    private List<Permission> permissions = new ArrayList<>();
 
     private Boolean connected = false;
     private boolean deleted = false;
@@ -63,8 +67,17 @@ public class User {
    // private Set<Portfolio> portfolios;
 
     @ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Task> tasks;
+    @ManyToMany(mappedBy="users", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Note> notes;
 
+
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
+    @JsonIgnore
+    private Set<NoteUser> NoteUsers;
     //@OneToOne(mappedBy="portfolio")
     //private Consultant consultant;
 

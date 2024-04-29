@@ -34,7 +34,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         List<Role> roles = user.getRoles();
 
-        List<GrantedAuthority> authorities = roles.size() == 1 ? List.of(new SimpleGrantedAuthority(roles.get(0).getRoleName().toString())) : roles.stream().map(role -> new SimpleGrantedAuthority(role.getRoleName().toString())).collect(Collectors.toList());
+        List<GrantedAuthority> authorities = roles.size() == 1 ? List.of(new SimpleGrantedAuthority(roles.get(0)
+                .getRoleName().toString())) : roles.stream().map(role -> new SimpleGrantedAuthority(role.getRoleName()
+                .toString())).collect(Collectors.toList());
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),

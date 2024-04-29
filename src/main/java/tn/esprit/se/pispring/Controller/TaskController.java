@@ -93,4 +93,9 @@ public class TaskController {
         List<Task> tasks = iTaskService.findTasksCompletedLate();
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
+    @PostMapping("/{taskId}/assignResource/{resourceId}")
+    public ResponseEntity<Task> assignTaskToResource(@PathVariable Long taskId, @PathVariable Long resourceId) {
+        Task task = iTaskService.assignTaskToResource(taskId, resourceId);
+        return new ResponseEntity<>(task, HttpStatus.OK);
+    }
 }

@@ -13,11 +13,15 @@ import tn.esprit.se.pispring.Repository.RoleRepo;
 import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.entities.ERole;
 import tn.esprit.se.pispring.entities.Role;
+
 import tn.esprit.se.pispring.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
+
+import static tn.esprit.se.pispring.entities.EPermission.ROLE_ADMIN_READ;
+import static tn.esprit.se.pispring.entities.ERole.ROLE_ADMIN;
 
 @Component
 @Slf4j
@@ -26,6 +30,8 @@ public class runner implements CommandLineRunner {
 
     @Autowired
     private RoleRepo roleRepo;
+//    @Autowired
+//    private PermissionRepo permissionRepo;
 
     @Autowired
     private UserRepository userRepo;
@@ -39,7 +45,7 @@ public class runner implements CommandLineRunner {
       List<Role> roles = roleRepo.findAll();
       if (roles.isEmpty()) {
         Role roleAdmin = new Role();
-        roleAdmin.setRoleName(ERole.ROLE_ADMIN);
+        roleAdmin.setRoleName(ROLE_ADMIN);
         roleRepo.save(roleAdmin);
 
         Role roleUser = new Role();
@@ -88,9 +94,14 @@ public class runner implements CommandLineRunner {
         admin.setLastName("admin");
         admin.setPassword(passwordEncoder.encode("123456789"));
         List<Role> roless = new ArrayList<>();
-        roless.add(roleRepo.findRoleByRoleName(ERole.ROLE_ADMIN));
+        roless.add(roleRepo.findRoleByRoleName(ROLE_ADMIN));
         admin.setEmail("adming@email.com");
         admin.setRoles(roless);
+
+//        List<Permission> permissions = new ArrayList<>();
+//        permissions.add(permissionRepo.findPermissionByPermissionName(ROLE_ADMIN_READ));
+//
+//        admin.setPermissions(permissions);
         userRepo.save(admin);
 
 
@@ -128,8 +139,6 @@ public class runner implements CommandLineRunner {
         projAdmin.setRoles(rolesssss);
         projAdmin.setEmail("projAdmin@email.com");
         userRepo.save(projAdmin);
-// Add a CRM admin
-
         User crmAdmin = new User();
         crmAdmin.setFirstName("crm");
         crmAdmin.setLastName("admin");

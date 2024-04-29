@@ -17,8 +17,7 @@ public interface TaskRepository extends JpaRepository<Task,Long> {
     List<Task> findByTaskEnddateBeforeAndTaskStatus(Date endDate, TaskStatus status);
     List<Task> findByTaskEnddateBeforeAndTaskStatusNot(Date currentDate, TaskStatus status);
 
-   /* @Query("SELECT DISTINCT u FROM Task t JOIN t.users u WHERE t.project.projectId = :projectId")
-    List<User> findUsersByProjectId(@Param("projectId") Long projectId);*/
-
+    @Query("SELECT MAX(t.taskEnddate) FROM Task t WHERE t.project.projectId = :projectId")
+    Date findLatestTaskEndDateByProjectId(@Param("projectId") Long projectId);
 
 }

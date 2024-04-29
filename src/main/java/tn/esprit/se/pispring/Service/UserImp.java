@@ -50,6 +50,10 @@ public class UserImp implements UserService {
         }
 
     }
+    @Override
+    public List<User> getAlluser() {
+        return userRepository.findAll();
+    }
 
     @Override
     public User findByEmail(String username) {
@@ -413,6 +417,10 @@ public class UserImp implements UserService {
         return usersTasksDTOList;
     }
 
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
 
 }
