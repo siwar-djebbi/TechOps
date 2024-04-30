@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import tn.esprit.se.pispring.Repository.PermissionRepo;
 import tn.esprit.se.pispring.Repository.RoleRepo;
 import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.entities.ERole;
+import tn.esprit.se.pispring.entities.Permission;
 import tn.esprit.se.pispring.entities.Role;
 
 import tn.esprit.se.pispring.entities.User;
@@ -30,8 +32,8 @@ public class runner implements CommandLineRunner {
 
     @Autowired
     private RoleRepo roleRepo;
-//    @Autowired
-//    private PermissionRepo permissionRepo;
+    @Autowired
+    private PermissionRepo permissionRepo;
 
     @Autowired
     private UserRepository userRepo;
@@ -98,10 +100,10 @@ public class runner implements CommandLineRunner {
         admin.setEmail("adming@email.com");
         admin.setRoles(roless);
 
-//        List<Permission> permissions = new ArrayList<>();
-//        permissions.add(permissionRepo.findPermissionByPermissionName(ROLE_ADMIN_READ));
-//
-//        admin.setPermissions(permissions);
+        List<Permission> permissions = new ArrayList<>();
+        permissions.add(permissionRepo.findPermissionByPermissionName(ROLE_ADMIN_READ));
+        admin.setPermissions(permissions);
+        
         userRepo.save(admin);
 
 

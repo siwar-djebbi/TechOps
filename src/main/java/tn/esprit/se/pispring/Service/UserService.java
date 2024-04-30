@@ -1,6 +1,7 @@
 package tn.esprit.se.pispring.Service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.se.pispring.DTO.Request.*;
 import tn.esprit.se.pispring.DTO.Response.*;
 import tn.esprit.se.pispring.entities.TaskStatus;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 public interface UserService {
 
+    String uploadProfilePhoto(String token, MultipartFile file) throws Exception;
 
     String signup(UserSignupRequest userReq) throws Exception;
 
@@ -35,6 +37,7 @@ public interface UserService {
 
 
     void banUserByEmail(String email);
+    long getTotalBannedUsers();
 
     Map<TaskStatus, Integer> getTasksByStatus(Long userId);
 

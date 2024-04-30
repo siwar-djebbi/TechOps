@@ -1,11 +1,7 @@
 package tn.esprit.se.pispring.entities;
 
 import com.google.common.collect.Sets;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 

@@ -16,7 +16,6 @@ import static javax.persistence.FetchType.EAGER;
 @Builder
 @Getter
 @Setter
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -31,6 +30,12 @@ public class User {
     private String password;
     private Integer telephone;
     private Integer salaire;
+    private Boolean connected = false;
+    private boolean deleted = false;
+    private boolean enabled= true;
+
+    @Lob
+    private byte[] profilePhoto;
 
     @ManyToMany(fetch = EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns  = @JoinColumn(name = "role_id"))
@@ -40,9 +45,7 @@ public class User {
 //    @JoinTable(name = "user_permissions", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns  = @JoinColumn(name = "permission_id"))
 //    private List<Permission> permissions = new ArrayList<>();
 
-    private Boolean connected = false;
-    private boolean deleted = false;
-    private boolean enabled= true;
+
 
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
@@ -87,4 +90,10 @@ public class User {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     @JsonIgnore
     List<LikeDislike> likeDislikeProductList;
+
+    public void setPermissions(List<Permission> permissions) {
+    }
+
+    public void setProfilePhotoUrl(String fileName) {
+    }
 }
