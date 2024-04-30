@@ -12,6 +12,6 @@ public class NotificationController {
     private NotificationService notificationService;
     @PostMapping("/create")
     public ResponseEntity<String> createNotification(@RequestBody Notification notification) {
-            notificationService.createNotification(notification);
-            return ResponseEntity.ok("Notification created successfully.");
-        }}
+        notificationService.createNotification(notification);
+        return ResponseEntity.ok("Notification created successfully.");
+    }}

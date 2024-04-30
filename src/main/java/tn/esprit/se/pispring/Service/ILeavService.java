@@ -2,8 +2,11 @@ package tn.esprit.se.pispring.Service;
 
 import tn.esprit.se.pispring.entities.Leav;
 import tn.esprit.se.pispring.entities.Notification;
+import tn.esprit.se.pispring.entities.User;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface ILeavService {
 
@@ -18,4 +21,13 @@ public interface ILeavService {
     Leav refuseLeaveRequest(Long leaveId);
 
     List<Notification> getNotifications();
+
+    User getUserByLeaveId(Long leaveId);
+
+    Long getLeaveIdByDate(Date leaveStartdate);
+
+    List<Leav> getLeavesForUser(Long id);
+
+    Map<String, Long> getLeaveStatistics();
+
 }

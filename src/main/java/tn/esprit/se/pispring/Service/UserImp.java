@@ -422,5 +422,13 @@ public class UserImp implements UserService {
         return userRepository.findAll();
     }
 
+    @Override
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+    @Override
+    public User retrieveUser(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
 
 }

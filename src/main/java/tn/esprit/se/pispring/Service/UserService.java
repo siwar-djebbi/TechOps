@@ -48,4 +48,8 @@ public interface UserService {
 
     List<UserTasksDTO> getUsersTasksWithCount();
     List<User> getAllUsers();
+
+    User getUserById(Long id);
+
+    User retrieveUser(Long id);
 }

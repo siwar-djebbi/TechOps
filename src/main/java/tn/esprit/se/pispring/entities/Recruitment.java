@@ -29,6 +29,8 @@ public class Recruitment {
     private double salaryRangeMax; // Maximum salary range for the position
     private int numberOfOpenings; // Number of open positions for recruitment
     private boolean urgent; //
+    private int ExperienceRequired; // Number of open positions for recruitment
+
     @Temporal(TemporalType.DATE)
     private Date recruitmentDate;
     @Enumerated(EnumType.STRING)
@@ -36,4 +38,6 @@ public class Recruitment {
     @JsonIgnore
     @ManyToOne
     User user;
+
+
 }

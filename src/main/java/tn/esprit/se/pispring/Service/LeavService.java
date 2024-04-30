@@ -6,15 +6,11 @@ import org.springframework.stereotype.Service;
 import tn.esprit.se.pispring.Repository.LeavRepository;
 import tn.esprit.se.pispring.Repository.NotificationRepository;
 import tn.esprit.se.pispring.Repository.UserRepository;
-import tn.esprit.se.pispring.entities.Leav;
-import tn.esprit.se.pispring.entities.LeaveStatus;
-import tn.esprit.se.pispring.entities.Notification;
-import tn.esprit.se.pispring.entities.User;
+import tn.esprit.se.pispring.entities.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,12 +19,13 @@ public class LeavService implements ILeavService {
     private final UserRepository userRepository;
 
     private final LeavRepository leavRepository;
-    private  final NotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
 
     @Override
     public Leav retrieveLeav(Long leaveId) {
         return leavRepository.findById(leaveId).orElse(null);
     }
+
     @Override
     public List<Leav> retrieveAllLeaves() {
         return leavRepository.findAll();
@@ -38,10 +35,12 @@ public class LeavService implements ILeavService {
     public Leav addOrUpdateLeav(Leav L) {
         return leavRepository.save(L);
     }
+
     @Override
     public void removeLeav(Long leaveId) {
-    leavRepository.deleteById(leaveId);
+        leavRepository.deleteById(leaveId);
     }
+
     @Override
     @Transactional
     public Leav assignLeavToUser(Long leaveId, Long id) {
@@ -99,49 +98,39 @@ public class LeavService implements ILeavService {
         try {
             Leav leav = leavRepository.findById(leaveId).orElse(null);
 
-            // Calculate leave duration in days
             Integer leaveDurationInDays = calculateLeaveDurationInDays(leav.getLeaveStartdate(), leav.getLeaveEnddate());
 
-            // Check if leave duration exceeds available leave days left
             if (leav.getLeaveDaysLeft() < leaveDurationInDays) {
                 throw new IllegalArgumentException("Leave duration exceeds available leave days left.");
             }
 
-            // Set leave status to APPROVED
             leav.setLeaveStatus(LeaveStatus.APPROVED);
+            leav.setLeaveApproved(true);
 
             return leavRepository.save(leav);
         } catch (EntityNotFoundException | IllegalArgumentException e) {
             log.error("Failed to accept leave request. " + e.getMessage());
-            throw e; // Rethrow the exception
+            throw e;
         } catch (Exception e) {
             log.error("Failed to accept leave request.", e);
             throw new RuntimeException("Failed to accept leave request.", e);
         }
     }
 
-    // Method to calculate the leave duration in days
 
     private int calculateLeaveDurationInDays(Date leaveStartDate, Date leaveEndDate) {
         if (leaveStartDate == null || leaveEndDate == null) {
             throw new IllegalArgumentException("Leave start date or end date cannot be null.");
         }
 
-        // Get the timestamps for the start and end dates
         long startTime = leaveStartDate.getTime();
         long endTime = leaveEndDate.getTime();
 
-        // Calculate the difference in milliseconds
         long durationInMillis = endTime - startTime;
-
-        // Convert milliseconds to days (1 day = 24 * 60 * 60 * 1000 milliseconds)
         int durationInDays = (int) (durationInMillis / (24 * 60 * 60 * 1000));
 
         return durationInDays;
     }
-
-
-
 
 
     //refuser le congé par l'admin hr si le nbr de jours restants exceeds el nbr de jours demandés.
@@ -157,6 +146,7 @@ public class LeavService implements ILeavService {
         }
 
         leav.setLeaveStatus(LeaveStatus.REFUSED);
+        leav.setLeaveApproved(false);
         return leavRepository.save(leav);
     }
 
@@ -164,5 +154,31 @@ public class LeavService implements ILeavService {
     public List<Notification> getNotifications() {
         return notificationRepository.findAll();
     }
-    }
 
+    @Override
+    public User getUserByLeaveId(Long leaveId) {
+        Optional<Leav> leaveOptional = leavRepository.findById(leaveId);
+        if (leaveOptional.isPresent()) {
+            Leav leave = leaveOptional.get();
+            return leave.getUser();
+        }
+        return null;
+    }
+    @Override
+    public Long getLeaveIdByDate(Date leaveStartdate) {
+        return leavRepository.findIdByLeaveStartdate(leaveStartdate);
+    }
+    @Override
+    public List<Leav> getLeavesForUser(Long id) {
+        return leavRepository.findByUserId(id);
+    }
+    @Override
+    public Map<String, Long> getLeaveStatistics() {
+        Map<String, Long> statistics = new HashMap<>();
+        statistics.put("totalLeaves", leavRepository.count());
+        statistics.put("sickLeaves", leavRepository.countByLeaveType(LeaveType.SICK_LEAVE));
+        statistics.put("vacationLeaves", leavRepository.countByLeaveType(LeaveType.VACATION_LEAVE
+        ));
+        return statistics;
+    }
+}
