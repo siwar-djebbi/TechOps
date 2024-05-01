@@ -9,15 +9,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.se.pispring.DTO.Request.*;
 import tn.esprit.se.pispring.DTO.Response.*;
 import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.Service.RoleService;
 import tn.esprit.se.pispring.Service.UserService;
-import tn.esprit.se.pispring.Service.UserStatisticsService;
 import tn.esprit.se.pispring.entities.Role;
 import tn.esprit.se.pispring.entities.ERole;
+import tn.esprit.se.pispring.entities.TaskStatus;
 import tn.esprit.se.pispring.entities.User;
 import tn.esprit.se.pispring.events.NewUserAddedEvent;
 
@@ -36,7 +35,6 @@ public class UserController {
     @Value("${asserter.default.secret}")
     private String DEFAULT_PASSWORD;
     private final UserService userService;
-    private final UserStatisticsService userStatisticsService;
     private final UserRepository userRepo;
     private final ApplicationEventPublisher publisher;
     private final RoleService roleService;
@@ -62,13 +60,11 @@ public class UserController {
 
     @GetMapping("/getCurrent")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
-    //@PreAuthorize("hasAuthority('ROLE_ADMIN_READ')")
-
     public ResponseEntity<?> getCurrentUserInfos(@RequestHeader(name = "Authorization") String token) throws Exception {
         try {
-            log.info(token);
-            log.info("#######################");
-            log.info("####################3##");
+            log.error(token);
+            log.error("#######################");
+            log.error("####################3##");
             CurrentUserResponse user = userService.getCurrentUserInfos(token);
             return ResponseEntity.ok(user);
         }catch (Exception e) {
@@ -186,25 +182,6 @@ public class UserController {
         return new ResponseEntity<>(usersTasksDTOList, HttpStatus.OK);
     }
 
-    @PostMapping("/upload-profile-photo")
-    public ResponseEntity<?> uploadProfilePhoto(@RequestHeader(name = "Authorization") String token, @RequestParam("file") MultipartFile file) {
-        try {
-            // Your existing logic for uploading profile photo
-            String photoUrl = userService.uploadProfilePhoto(token, file);
-            return ResponseEntity.ok(photoUrl);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to upload profile photo: " + e.getMessage());
-        }
-    }
-    @GetMapping("/project-release-statistics")
-    public ResponseEntity<?> getProjectReleaseStatisticsForCurrentUser() throws Exception {
-        try {
-            ProjectReleaseStatisticsResponse statistics = userStatisticsService.getProjectReleaseStatisticsForCurrentUser();
-            return ResponseEntity.ok(statistics);
-        } catch (Exception e) {
-            throw new Exception(e);
-        }
-    }
 
 
 
