@@ -1,11 +1,18 @@
 package tn.esprit.se.pispring.Service;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import tn.esprit.se.pispring.DTO.Response.ProjectReleaseStatisticsResponse;
 import tn.esprit.se.pispring.DTO.Response.ProjectResponse;
 import tn.esprit.se.pispring.DTO.Response.UserResponse;
+import tn.esprit.se.pispring.Repository.ProjectRepository;
 import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.entities.Project;
+import tn.esprit.se.pispring.entities.ProjectStatus;
 import tn.esprit.se.pispring.entities.Task;
 import tn.esprit.se.pispring.entities.User;
 import java.util.HashMap;
@@ -14,10 +21,14 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
+@Slf4j
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserStatisticsService {
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private ProjectRepository projectRepository;
     public Map<UserResponse, Map<ProjectResponse, Integer>> getUserTaskCountPerProject() {
         Map<UserResponse, Map<ProjectResponse, Integer>> userTaskCountPerProject = new HashMap<>();
 
@@ -74,4 +85,24 @@ public class UserStatisticsService {
         return userCountPerProject;
     }
 
+    public ProjectReleaseStatisticsResponse getProjectReleaseStatisticsForCurrentUser() {
+        // Get the current authenticated user
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userRepository.findByEmail(currentUsername);
+
+        if (currentUser != null) {
+            // Count total projects where the user is assigned as project manager
+            int totalProjects = projectRepository.countByProjectManager(currentUser);
+
+            // Count completed projects
+            int completedProjects = projectRepository.countByProjectManagerAndProjectStatus(currentUser, ProjectStatus.COMPLETED);
+
+            // Count ongoing projects
+            int ongoingProjects = totalProjects - completedProjects;
+
+            return new ProjectReleaseStatisticsResponse(totalProjects, completedProjects, ongoingProjects);
+        }
+
+        return null;
+    }
 }

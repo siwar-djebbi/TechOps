@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.se.pispring.DTO.Request.*;
 import tn.esprit.se.pispring.DTO.Response.*;
 import tn.esprit.se.pispring.Repository.RoleRepo;
@@ -15,6 +16,11 @@ import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.entities.*;
 import tn.esprit.se.pispring.secConfig.JwtUtils;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,6 +39,49 @@ public class UserImp implements UserService {
 
     private final RoleRepo roleRepo;
     private final JwtUtils jwtUtils;
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
+    @Override
+    public String uploadProfilePhoto(String token, MultipartFile file) throws Exception {
+        // Check if the file is empty
+        if (file.isEmpty()) {
+            throw new Exception("File is empty");
+        }
+
+        try {
+            // Get the user based on the token (you need to implement this logic)
+            User user = getUserFromToken(token);
+
+            // Generate a unique filename for the uploaded file
+            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+
+            // Set the file path where the uploaded file will be saved
+            String filePath = Paths.get(uploadDir, fileName).toString();
+
+            // Save the file to the specified location
+            Path targetLocation = Paths.get(filePath);
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            // Update the user's profile photo URL in the database
+            user.setProfilePhotoUrl(fileName);
+            userRepository.save(user);
+
+            // Return the URL of the uploaded profile photo
+            return fileName;
+        } catch (IOException ex) {
+            throw new Exception("Failed to save file: " + ex.getMessage(), ex);
+        }
+    }
+
+    // You need to implement the logic to retrieve the user based on the token
+    private User getUserFromToken(String token) throws Exception {
+        // Implement the logic to retrieve the user based on the token
+        // For example, you might use JWT token parsing to extract user information
+        // Or you might have a separate service to validate and decode the token
+        // Replace this with your actual logic to retrieve the user
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 
     @Override
     public String signup(UserSignupRequest userReq) throws Exception {
@@ -264,6 +313,13 @@ public class UserImp implements UserService {
     }
 
     @Override
+    public long getTotalBannedUsers() {
+        return userRepository.countByEnabledFalse();
+
+    }
+
+
+    @Override
     public Map<TaskStatus, Integer> getTasksByStatus(Long userId) {
         // Retrieve user's tasks from the database
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -430,5 +486,6 @@ public class UserImp implements UserService {
     public User retrieveUser(Long id) {
         return userRepository.findById(id).orElse(null);
     }
+
 
 }
