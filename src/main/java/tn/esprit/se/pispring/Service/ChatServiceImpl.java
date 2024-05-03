@@ -35,17 +35,21 @@ public class ChatServiceImpl implements ChatService {
     public Message addMessage2(MessageDTO message) throws Exception {
         Message m = new Message();
         log.info("#################################");
-
         System.out.println(message.getChatId());
+        Integer chatId = message.getChatId(); // Use Integer instead of int to allow null
+        if (chatId == null) {
+            throw new IllegalArgumentException("ChatId cannot be null");
+        }
 
-        Optional <Chat> c = chatRepository.findById(message.getChatId());
+        Optional <Chat> c = chatRepository.findById(chatId);
         if (c.isEmpty()){
             throw new Exception("chat is null");
         }
+        Chat chat = c.get();
 
         m.setReplymessage(message.getReplymessage());
         m.setSenderEmail(message.getSenderEmail());
-
+        m.setChat(chat);
         return messageRepository.save(m);
     }
 

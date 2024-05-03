@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -103,17 +104,33 @@ public class ChatController {
         }
     }
 
+//
+//    @GetMapping("/getChatByFirstUserNameAndSecondUserName")
+//    public ResponseEntity<?> getChatByFirstUserNameAndSecondUserName(@RequestBody Map<String, String> requestParams) {
+//
+//        String firstUserName = requestParams.get("firstUserName");
+//        String secondUserName = requestParams.get("secondUserName");
+//
+//        try {
+//            HashSet<Chat> chatByBothEmail = this.chatService.getChatByFirstUserNameAndSecondUserName(firstUserName, secondUserName);
+//            return new ResponseEntity<>(chatByBothEmail, HttpStatus.OK);
+//        } catch (ChatNotFoundException e) {
+//            return new ResponseEntity<>("Chat Not Exits", HttpStatus.NOT_FOUND);
+//        }
+//    }
+@GetMapping("/getChatByFirstUserNameAndSecondUserName")
+public ResponseEntity<?> getChatByFirstUserNameAndSecondUserName(
+        @RequestParam("firstUserName") String firstUserName,
+        @RequestParam("secondUserName") String secondUserName) {
 
-    @GetMapping("/getChatByFirstUserNameAndSecondUserName")
-    public ResponseEntity<?> getChatByFirstUserNameAndSecondUserName(@RequestParam("firstUserName") String firstUserName, @RequestParam("secondUserName") String secondUserName){
-
-        try {
-            HashSet<Chat> chatByBothEmail = this.chatService.getChatByFirstUserNameAndSecondUserName(firstUserName, secondUserName);
-            return new ResponseEntity<>(chatByBothEmail, HttpStatus.OK);
-        } catch (ChatNotFoundException e) {
-            return new ResponseEntity("Chat Not Exits", HttpStatus.NOT_FOUND);
-        }
+    try {
+        HashSet<Chat> chatByBothEmail = this.chatService.getChatByFirstUserNameAndSecondUserName(firstUserName, secondUserName);
+        return new ResponseEntity<>(chatByBothEmail, HttpStatus.OK);
+    } catch (ChatNotFoundException e) {
+        return new ResponseEntity<>("Chat Not Exists", HttpStatus.NOT_FOUND);
     }
+}
+
 
 
     @PutMapping("/message/{chatId}")

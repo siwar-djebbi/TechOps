@@ -19,7 +19,7 @@ public class Message {
     private int id;
 
     private String senderEmail;
-    private Date time = new Date(System.currentTimeMillis());
+    private String time = new Date(System.currentTimeMillis()).toString();
     private String replymessage;
 
     @ManyToOne(fetch = FetchType.EAGER)
