@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
+
 @Builder
 @Getter
 @Setter
@@ -38,6 +40,7 @@ public class Recruitment {
     @JsonIgnore
     @ManyToOne
     User user;
-
-
+    @JsonIgnore
+    @OneToMany(mappedBy = "recruitment", cascade = CascadeType.ALL)
+    private List<Candidate> candidates;
 }

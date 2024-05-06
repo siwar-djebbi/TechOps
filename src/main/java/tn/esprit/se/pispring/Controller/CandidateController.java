@@ -2,11 +2,13 @@ package tn.esprit.se.pispring.Controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.se.pispring.Service.ICandidateService;
 import tn.esprit.se.pispring.Service.IRecruitmentService;
 import tn.esprit.se.pispring.entities.Candidate;
+import tn.esprit.se.pispring.entities.Leav;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -35,22 +37,26 @@ public class CandidateController {
     }
 
     @GetMapping("/getCand/{idCandidate}")
-    public ResponseEntity<Candidate> getCandidateById(@PathVariable Long idCandidate) {
-        Candidate candidate = candidateService.retrieveCandidate(idCandidate);
-        if (candidate == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(candidate);
+    Candidate getCandidateById(@PathVariable("idCandidate") Long idCandidate)
+    {
+        return candidateService.retrieveCandidate(idCandidate);
     }
-
     @DeleteMapping("/delete/{idCandidate}")
     public ResponseEntity<?> deleteCandidate(@PathVariable Long idCandidate) {
         candidateService.removeCandidate(idCandidate);
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/candidates/{candidateId}/assign-recruitment/{offerId}")
+    public ResponseEntity<?> assignRecruitment(@PathVariable Long candidateId, @PathVariable Long offerId) {
+        candidateService.assignRecruitmentToCandidate(candidateId, offerId);
+        return ResponseEntity.ok("Recruitment assigned successfully.");
+    }
 
-
-
+    @GetMapping("/count/{offerId}")
+    public ResponseEntity<Integer> countCandidatesByRecruitmentOfferId(@PathVariable Long offerId) {
+        int count = candidateService.countCandidatesByRecruitmentOfferId(offerId);
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
 
 }

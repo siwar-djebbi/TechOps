@@ -1,12 +1,16 @@
 package tn.esprit.se.pispring.Controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.se.pispring.Repository.ProductRepository;
 import tn.esprit.se.pispring.Service.Product.ProductServices;
+import tn.esprit.se.pispring.Service.ProductionService.ProductionServiceImpl;
 import tn.esprit.se.pispring.entities.Product;
+import tn.esprit.se.pispring.entities.Production;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @RestController
@@ -16,7 +20,7 @@ import java.util.List;
 public class ProductController {
     ProductServices productServices;
     ProductRepository productRepository;
-
+    ProductionServiceImpl productionService;
     @PostMapping("/addProduct")
     public Product addProduct(@RequestBody Product product) {
 
@@ -75,6 +79,28 @@ public class ProductController {
     }
 
 
+//    @PostMapping("/products/add-with-barcode")
+//    public ResponseEntity<Product> addProductWithBarcode(@RequestBody Product product) {
+//        Product addedProduct = productServices.addProductWithBarcode(product);
+//        if (addedProduct != null) {
+//            return new ResponseEntity<>(addedProduct, HttpStatus.CREATED);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
 
-}
+    @PostMapping("/add-with-barcode/{productionId}")
+    public ResponseEntity<?> addProductWithBarcodeAndAssignProduction(
+            @RequestBody Product product,
+            @PathVariable("productionId") Long productionId) {
+        Product addedProduct = productServices.addProductWithBarcodeAndAssignProduction(product, productionId);
+        if (addedProduct != null) {
+            return ResponseEntity.ok(addedProduct);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    ////////////////////////////////AFFECTATION
+
+    }

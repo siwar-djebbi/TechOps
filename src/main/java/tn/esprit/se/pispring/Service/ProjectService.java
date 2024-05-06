@@ -4,21 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 import tn.esprit.se.pispring.Repository.ProjectRepository;
+import tn.esprit.se.pispring.Repository.ResourceRepository;
 import tn.esprit.se.pispring.Repository.TaskRepository;
 import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.entities.Project;
 import tn.esprit.se.pispring.entities.ProjectStatus;
-import tn.esprit.se.pispring.entities.Resources;
 import tn.esprit.se.pispring.entities.Task;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +23,7 @@ import java.util.stream.Collectors;
 public class ProjectService implements IProjectService{
     ProjectRepository projectRepository;
     TaskRepository taskRepository;
+    ResourceRepository resourceRepository;
 
 
 
@@ -35,8 +32,10 @@ public class ProjectService implements IProjectService{
 
 
 
-
-
+@Override
+public List<Project> getProjectsByBudgetId(Long budgetId) {
+    return projectRepository.findProjectsByBudgetId(budgetId);
+}
     @Override
     public Project addProject(Project project) {
         return projectRepository.save(project);

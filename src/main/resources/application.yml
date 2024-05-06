@@ -1,4 +1,2 @@
 jwt:
   secret: "mou3a9kenTW44sSa3Feha"
-file:
-    upload-dir: /path/to/upload/directory

@@ -12,11 +12,10 @@ import tn.esprit.se.pispring.entities.Leav;
 import tn.esprit.se.pispring.entities.Notification;
 import tn.esprit.se.pispring.entities.User;
 
+import javax.persistence.EntityNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
@@ -59,26 +58,42 @@ public class LeavController {
         }
     }
 
-    @PutMapping("/{leaveId}/accept")
-    //@PreAuthorize("hasRole('ROLE_HR_ADMIN')")
-    public ResponseEntity<String> acceptLeaveRequest(@PathVariable("leaveId") Long leaveId) {
+    @PutMapping("/accept/{leaveId}")
+    public ResponseEntity<Leav> acceptLeaveRequest(@PathVariable Long leaveId) {
         try {
-            leavService.acceptLeaveRequest(leaveId);
-            return ResponseEntity.ok("Leave request accepted successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to accept leave request: " + e.getMessage());
-
+            Leav acceptedLeave = leavService.acceptLeaveRequest(leaveId);
+            return ResponseEntity.ok(acceptedLeave);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
     @PutMapping("/{leaveId}/refuse")
-    public ResponseEntity<String> refuseLeaveRequest(@PathVariable("leaveId") Long leaveId) {
+    public ResponseEntity<Map<String, String>> refuseLeaveRequest(@PathVariable("leaveId") Long leaveId) {
         try {
             leavService.refuseLeaveRequest(leaveId);
-            return ResponseEntity.ok("Leave request refused successfully.");
+            Map<String, String> responseBody = new HashMap<>();
+            responseBody.put("message", "Leave request refused successfully.");
+            return ResponseEntity.ok(responseBody);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to refuse leave request: " + e.getMessage());
+                    .body(Collections.singletonMap("error", "Failed to refuse leave request: " + e.getMessage()));
+        }
+    }
+
+
+    @GetMapping("/leave/duration/{startDate}/{endDate}")
+    public int calculateLeaveDurationInDays(@PathVariable String startDate, @PathVariable String endDate) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date start = dateFormat.parse(startDate);
+            Date end = dateFormat.parse(endDate);
+            return leavService.calculateLeaveDurationInDays(start, end);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Invalid date format. Please use yyyy-MM-dd format.");
         }
     }
     @GetMapping("/notifications")

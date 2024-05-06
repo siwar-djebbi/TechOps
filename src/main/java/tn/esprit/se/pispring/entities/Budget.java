@@ -17,8 +17,10 @@ public class Budget {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long budget_id;
-    private Float budget_amount;
-    //private Float budgetReel; // Nouvel attribut: Budget réel
+    @Column(name = "budget_amount")
+    private Double  budget_amount;
+   private Double  budgetReel;
+    private Double  budget_variance;
 
     private String dependencies;
     @OneToOne

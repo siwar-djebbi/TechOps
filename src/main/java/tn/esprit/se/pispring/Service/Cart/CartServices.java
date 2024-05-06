@@ -45,11 +45,20 @@ public class CartServices implements ICartServices {
 //    cartRepository.save(cart);
 //    cartItemRepository.save(cartItem);
 //}
-
+@Override
+public Cart addCart(Cart cart) {
+    return cartRepository.save(cart);
+}
     @Override
     public void addProductToCart(Long cartId, Long productId, Long quantity) {
         Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new RuntimeException("Cart not found with id " + cartId));
+                .orElseGet(() -> {
+                    // Si aucun panier n'existe avec l'ID donné, créez un nouveau panier
+                    Cart newCart = new Cart();
+                    // Initialisez les autres valeurs du panier si nécessaire
+                    return cartRepository.save(newCart);
+                });
+
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found with id " + productId));
 
@@ -76,6 +85,7 @@ public class CartServices implements ICartServices {
         cart.setDateLastItem(new Date()); // Mise à jour de la date du dernier article ajouté
         cartRepository.save(cart); // Sauvegarde les modifications du panier
     }
+
 
     @Override
     public float calculateTotalPrice(Long cartId) {

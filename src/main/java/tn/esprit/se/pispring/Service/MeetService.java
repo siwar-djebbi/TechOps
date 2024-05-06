@@ -10,12 +10,11 @@ import tn.esprit.se.pispring.Repository.MeetRepository;
 import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.entities.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.*;
 import javax.transaction.Transactional;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
@@ -29,6 +28,7 @@ public class MeetService implements MeetInterface {
    ConsultantRepository consultantRepository ;
     @Autowired
     UserRepository userRepository ;
+
     @Override
     public List<Meeting> retrieveAllMeetings() {
         return meetRepository.findAll();
@@ -239,7 +239,7 @@ public class MeetService implements MeetInterface {
         return statsMap;
     }
 
-    public Map<LocalDate, Long> countMeetingsByDateAndConsultantId(Long consultantId, Date dateBegin, Date dateEnd) {
+   /* public Map<LocalDate, Long> countMeetingsByDateAndConsultantId(Long consultantId, Date dateBegin, Date dateEnd) {
         Map<LocalDate, Long> meetingCountsByDate = new HashMap<>();
 
         // Convertir les dates en LocalDate
@@ -269,7 +269,7 @@ public class MeetService implements MeetInterface {
 
         return meetingCountsByDate;
 
-    }
+    }*/
    public List<Meeting> getMeetingsByConsultantId(Long consultantId) {
     List<Meeting> meets = meetRepository.findAll() ;
        List<Meeting> meetConsultants = new ArrayList<>() ;
@@ -311,6 +311,94 @@ public class MeetService implements MeetInterface {
              }
              return  userMeeting ;
          }
+
+    public Map<String, Map<String, Integer>> calculateMonthlyMeetingStats(Long consultantId) {
+        Map<String, Map<String, Integer>> monthlyStats = new LinkedHashMap<>(); // linked pour assurer l'ordre des mois
+        List<Date> months = getMonths();
+
+        for (Date month : months) {
+            // Calculer la date de début et de fin pour chaque mois
+            Date startDate = month;
+            Date endDate = DateUtils.getEndDateOfMonth(startDate);
+
+            Map<String, Integer> statsForMonth = calculateMeetingStats(consultantId, startDate, endDate);
+            String monthKey = formatDate(month);
+
+            monthlyStats.put(monthKey, statsForMonth);
+            System.out.println("Statistiques pour " + monthKey + ": " + monthlyStats.get(monthKey));
+
+        }
+
+        return monthlyStats;
     }
+
+
+
+
+    public List<Date> getMonths() {
+        LocalDate now = LocalDate.now();
+        LocalDate monthBefore = now.minusMonths(1);
+        LocalDate twoMonthsBefore = now.minusMonths(2);
+        LocalDate threeMonthsBefore = now.minusMonths(3);
+
+        List<Date> dates = new ArrayList<>();
+
+        // Ajouter les dates dans l'ordre de plus ancien vers plus récent
+        dates.add(Date.from(threeMonthsBefore.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        dates.add(Date.from(twoMonthsBefore.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        dates.add(Date.from(monthBefore.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        dates.add(Date.from(now.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        System.out.println("Dates ordonné  : " + dates);
+
+        return dates;
+        }
+
+        public String formatDate(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM");
+        return formatter.format(date);
+    }
+
+    public Map<String, Integer> calculateMeetingStats(Long consultantId, Date startDate, Date endDate) {
+        Map<String, Integer> stats = new HashMap<>();
+
+
+        //Long totalMeetings = meetRepository.countTotalMeetings(consultantId, startDate, endDate);
+        Long canceledMeetings = meetRepository.countCanceledMeetings(consultantId, startDate, endDate);
+        Long succeededMeetings = meetRepository.countSucceededMeetings(consultantId, startDate, endDate);
+        Long PASSEDNOUVEAU= 0L ;
+        Long PASSEDtot= 0L ;
+        Long totalMeetings= 0L ;
+
+        Long countPASSEDMeetingFailed = meetRepository.countPASSEDMeetingFailed(consultantId, startDate, endDate);
+        Long countMeetingAncienClient = meetRepository.countMeetingAncienClient(consultantId, startDate, endDate);
+
+        //stats.put("PASSEDNOUVEAU", countPASSEDMeetingFailed.intValue()+ succeededMeetings.intValue());
+
+       // stats.put("PASSEDNOUVEAU", countPASSEDMeetingsetNonaffecter.intValue()+ succeededMeetings.intValue());
+
+
+        PASSEDNOUVEAU= (long) (countPASSEDMeetingFailed.intValue()+ succeededMeetings.intValue());
+        PASSEDtot= PASSEDNOUVEAU.longValue() +countMeetingAncienClient.intValue() ;
+        totalMeetings= PASSEDtot.longValue()+canceledMeetings.intValue() ;
+        stats.put("totalMeetings", totalMeetings.intValue());
+        stats.put("canceledMeetings", canceledMeetings.intValue());
+        stats.put("PassedTotal",PASSEDtot.intValue() );
+        stats.put("MeetingAncienClient", countMeetingAncienClient.intValue());
+        stats.put("PASSEDNOUVEAU",PASSEDNOUVEAU.intValue() );
+        stats.put("PASSEDMeetingFailed", countPASSEDMeetingFailed.intValue());
+        stats.put("succeededMeetings", succeededMeetings.intValue());
+
+        return stats;
+    }
+
+}
+
+
+
+
+
+
+
 
 

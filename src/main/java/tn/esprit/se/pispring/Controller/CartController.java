@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.se.pispring.Repository.CartRepository;
+import tn.esprit.se.pispring.Repository.ProductRepository;
 import tn.esprit.se.pispring.Service.Cart.CartServices;
 import tn.esprit.se.pispring.Service.Product.ProductServices;
 import tn.esprit.se.pispring.entities.Cart;
@@ -22,14 +24,28 @@ public class CartController {
     @Autowired
     private CartServices cartService;
     private ProductServices productServices;
-//    @PostMapping("/add-to-cart/{cartId}/{productId}/{quantity}")
+    private final ProductRepository productRepository;
+    private final CartRepository cartRepository;
+
+    //    @PostMapping("/add-to-cart/{cartId}/{productId}/{quantity}")
 //    public ResponseEntity<Cart> addToCart(@PathVariable("cartId") Long cartId, @PathVariable("productId") Long productId, @PathVariable("quantity") Long quantity) {
 //        Cart cart = cartService.addToCart(cartId, productId, quantity);
 //        return ResponseEntity.ok(cart);
 //    }
-    @PostMapping("/cartItem/{cartId}/{productId}/{quantity}") //OK
-    public void addProductToCart(@PathVariable("cartId") Long cartId, @PathVariable("productId") Long productId, @PathVariable("quantity") Long quantity) {
-    cartService.addProductToCart(cartId,productId,quantity);
+//    @PostMapping("/cartItem/{cartId}/{productId}/{quantity}") //OK
+//    public void addProductToCart(@PathVariable("cartId") Long cartId, @PathVariable("productId") Long productId, @PathVariable("quantity") Long quantity) {
+//    cartService.addProductToCart(cartId,productId,quantity);
+//    }
+@PostMapping("/addCart")
+public Cart addCart(@RequestBody Cart cart) {
+
+    return cartRepository.save(cart);
+}
+
+    @PostMapping("/cartItem/{cartId}/{productId}/{quantity}")
+    public ResponseEntity<Void> addProductToCart(@PathVariable Long cartId, @PathVariable Long productId, @PathVariable Long quantity) {
+        cartService.addProductToCart(cartId, productId, quantity);
+        return ResponseEntity.ok().build();
     }
 
 
@@ -38,11 +54,6 @@ public class CartController {
         float total = cartService.calculateTotalPrice(cartId);
         return ResponseEntity.ok(total);
     }
-
-
-
-
-
 
     @DeleteMapping("/removeItem/{id}")
     public ResponseEntity<?> removeFromCart(@PathVariable Long id) {
