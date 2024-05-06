@@ -24,17 +24,25 @@ public class Product {
     private Long productId;
     //    private Integer quantity;
     private String reference;
+  //  private String barcode;
     private String title;
+
+    @Column(columnDefinition = "MEDIUMTEXT")
+
     private String image;
     private String description;
     private Long stock;
     private Float price;
     private Long TVA;
+
     @Enumerated(EnumType.STRING)
     private ProductType productType;
 
     @Temporal(TemporalType.DATE)
     private Date createdAt;
+
+
+
 
     @ManyToOne
     @JoinColumn(name = "cart_id")
@@ -57,5 +65,8 @@ public class Product {
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "product")
     private List<MouvementStock> mouvementsStock;
 
+
+  public void setBarcode(String s) {
+  }
 }
 

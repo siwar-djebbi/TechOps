@@ -28,6 +28,7 @@ public class StockServiceImpl implements IStockService {
         mouvementStock.setProduct(product);
         return mouvementStockRepository.save(mouvementStock);
     }
+
 //    @Override
 //    public MouvementStock addMvt(MouvementStock mouvementStock) {
 //        return mouvementStockRepository.save(mouvementStock);
@@ -88,15 +89,14 @@ public class StockServiceImpl implements IStockService {
             return null;
         }
     }
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Valeur du stock moyen	Somme (quantité article x prix unitaire) du stock moyen
-    //ne9s logique ama temchi
-
+    //ne9s logique ama it works
     @Override
     public double calculateAverageStockValue() {
         List<Product> products = productRepository.findAll();
         double totalStockValue = 0.0;
-
         for (Product product : products) {
             // Obtenir le stock actuel du produit
             Long currentStock = calculateCurrentStock(product.getProductId());
@@ -107,9 +107,9 @@ public class StockServiceImpl implements IStockService {
                 totalStockValue += productStockValue;
             }
         }
-
         return totalStockValue;
     }
+
     //Stock moyen = (Stock initial + Stock final)/2
     @Override
     public double calculateAverageStockValueForPeriods(Long productId) {
@@ -153,6 +153,7 @@ public class StockServiceImpl implements IStockService {
             throw new EntityNotFoundException("Product not found with ID: " + productId);
         }
     }
+
     ///////////////////////////////////////////////////////////
 
 

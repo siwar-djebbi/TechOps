@@ -115,6 +115,17 @@ public class runner implements CommandLineRunner {
         hrAdmin.setRoles(rolesss);
         hrAdmin.setEmail("hrAdmin@email.com");
         userRepo.save(hrAdmin);
+//HR_ROLE
+        User hr = new User();
+        hr.setFirstName("first hr");
+        hr.setLastName("hr");
+        hr.setPassword(passwordEncoder.encode("123456789"));
+        List<Role> roleHr = new ArrayList<>();
+        roleHr.add(roleRepo.findRoleByRoleName(ERole.ROLE_HRE));
+        hr.setRoles(roleHr);
+        hr.setEmail("hr@email.com");
+        userRepo.save(hr);
+
 
         // Add a new HRE_ADMIN
 

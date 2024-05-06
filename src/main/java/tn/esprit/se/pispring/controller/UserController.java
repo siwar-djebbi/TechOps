@@ -200,5 +200,10 @@ public class UserController {
         return listUsers;
     }
 
+    @GetMapping("/getIdByEmail/{email}")
+    public ResponseEntity<Long> getUserIdByEmail(@PathVariable String email) {
+        Long userId = userRepo.getUserIdByEmail(email);
+        return ResponseEntity.ok(userId);
+    }
 
 }
