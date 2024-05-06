@@ -102,169 +102,46 @@ public class GeneratePdfPayroll {
             table.addCell(hcell);
 
 
-            PdfPCell cell;
-
-            cell = new PdfPCell(new Phrase("Number of days"));
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell);
-
-            cell = new PdfPCell(new Phrase(String.valueOf(payroll.getWork_hours_number())));
-            cell.setPaddingLeft(5);
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-            table.addCell(cell);
-
-            cell = new PdfPCell(new Phrase(""));
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            cell.setPaddingRight(5);
-            table.addCell(cell);
+            createCell(table,"Number of days");
+            createCell(table, String.valueOf(payroll.getWork_hours_number()));
+            createCell(table, "");
 
             if(payroll.getWork_hours_number()>payrollConfig.getMonth_days()){
-                cell = new PdfPCell(new Phrase("Extra days"));
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                table.addCell(cell);
-
-                cell = new PdfPCell(new Phrase(String.valueOf(payroll.getWork_hours_number() - payrollConfig.getMonth_days())));
-                cell.setPaddingLeft(5);
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-                table.addCell(cell);
-
-                cell = new PdfPCell(new Phrase(""));
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-                cell.setPaddingRight(5);
-                table.addCell(cell);
+                createCell(table, "Extra days");
+                createCell(table, String.valueOf(payroll.getWork_hours_number() - payrollConfig.getMonth_days()));
+                createCell(table,"");
             }
-
-                cell = new PdfPCell(new Phrase("Base Salary"));
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                table.addCell(cell);
-
-                cell = new PdfPCell(new Phrase("1"));
-                cell.setPaddingLeft(5);
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-                table.addCell(cell);
-
-                cell = new PdfPCell(new Phrase(String.valueOf(payroll.getBase_salary())));
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-                cell.setPaddingRight(5);
-                table.addCell(cell);
-
-            cell = new PdfPCell(new Phrase("Brut Salary"));
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell);
-
-            cell = new PdfPCell(new Phrase("1"));
-            cell.setPaddingLeft(5);
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-            table.addCell(cell);
-
-            cell = new PdfPCell(new Phrase(String.valueOf(payroll.getBrut_salary())));
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            cell.setPaddingRight(5);
-            table.addCell(cell);
+                createCell(table,"Base Salary");
+                createCell(table, "1");
+                createCell(table,String.valueOf(payroll.getBase_salary()));
+                createCell(table,"Brut Salary");
+                createCell(table, "1");
+                createCell(table, String.valueOf(payroll.getBrut_salary()));
             //Prime section
-            cell = new PdfPCell(new Phrase("Primes", headFont));
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell);
-
-            cell = new PdfPCell(new Phrase(" "));
-            cell.setPaddingLeft(5);
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-            table.addCell(cell);
-
-            cell = new PdfPCell(new Phrase(" "));
-            cell.setPaddingLeft(5);
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-            table.addCell(cell);
+                createCell(table, "Primes");
+                createCell(table, "");
+                createCell(table, "");
 
             for (Prime prime:primes
                  ) {
-                cell = new PdfPCell(new Phrase(String.valueOf(prime.getPrime_designation())));
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                table.addCell(cell);
-
-                cell = new PdfPCell(new Phrase("1"));
-                cell.setPaddingLeft(5);
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-                table.addCell(cell);
-
-                cell = new PdfPCell(new Phrase(String.valueOf(prime.getValue_amount())));
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-                cell.setPaddingRight(5);
-                table.addCell(cell);
-
+                createCell(table, String.valueOf(prime.getPrime_designation()));
+                createCell(table, "1");
+                createCell(table, String.valueOf(prime.getValue_amount()));
             }
-            //Contribution section
-            cell = new PdfPCell(new Phrase("Contributions", headFont));
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell);
+                //Contribution section
+                createCell(table, "Contributions");
+                createCell(table, "");
+                createCell(table, "");
+                for (Contribution contrib:contributions
+                ) {
+                    createCell(table, String.valueOf(contrib.getContribution_designation()));
+                    createCell(table, "1");
+                    createCell(table, String.valueOf(contrib.getContribution_amount()));
+                }
 
-            cell = new PdfPCell(new Phrase(" "));
-            cell.setPaddingLeft(5);
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-            table.addCell(cell);
-
-            cell = new PdfPCell(new Phrase(" "));
-            cell.setPaddingLeft(5);
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-            table.addCell(cell);
-            for (Contribution contrib:contributions
-            ) {
-                cell = new PdfPCell(new Phrase(String.valueOf(contrib.getContribution_designation())));
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                table.addCell(cell);
-
-                cell = new PdfPCell(new Phrase("1"));
-                cell.setPaddingLeft(5);
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-                table.addCell(cell);
-
-                cell = new PdfPCell(new Phrase(String.valueOf(contrib.getContribution_amount())));
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-                cell.setPaddingRight(5);
-                table.addCell(cell);
-
-            }
-
-            cell = new PdfPCell(new Phrase("Net Salary"));
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell);
-
-            cell = new PdfPCell(new Phrase("1"));
-            cell.setPaddingLeft(5);
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-            table.addCell(cell);
-
-            cell = new PdfPCell(new Phrase(String.valueOf(payroll.getNet_salary())));
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            cell.setPaddingRight(5);
-            table.addCell(cell);
+                createCell(table, "Net Salary");
+                createCell(table, "1");
+                createCell(table, String.valueOf(payroll.getNet_salary()));
 
             //Payment method and bank table
             PdfPTable table3 = new PdfPTable(3);
@@ -285,30 +162,13 @@ public class GeneratePdfPayroll {
             hcell3.setHorizontalAlignment(Element.ALIGN_CENTER);
             table3.addCell(hcell3);
 
-
-            PdfPCell cell5;
-
-            cell5 = new PdfPCell(new Phrase(payroll.getBank_name()));
-            cell5.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table3.addCell(cell5);
-
-            cell5 = new PdfPCell(new Phrase(String.valueOf(payroll.getAccount_number())));
-            cell5.setPaddingLeft(5);
-            cell5.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell5.setHorizontalAlignment(Element.ALIGN_LEFT);
-            table3.addCell(cell5);
-
-            cell5 = new PdfPCell(new Phrase(String.valueOf(("Payed on "+getLastDayOfMonth()+" by "+payroll.getPayment_method()))));
-            cell5.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell5.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            cell5.setPaddingRight(5);
-            table3.addCell(cell5);
+            createCell(table3, payroll.getBank_name());
+            createCell(table3,String.valueOf(payroll.getAccount_number()));
+            createCell(table3, "Payed on "+getLastDayOfMonth()+" by "+payroll.getPayment_method());
 
 // Set the amount of space after the table (adjust as needed)
             Paragraph space = new Paragraph();
             space.setSpacingAfter(20);
-
 
             PdfWriter.getInstance(document, out);
             document.open();
@@ -337,6 +197,14 @@ public class GeneratePdfPayroll {
         // Format and print the last day of the current month
         String formattedLastDayOfMonth = lastDayOfMonth.format(formatter);
         return formattedLastDayOfMonth;
+    }
+
+    private void createCell(PdfPTable table, String value){
+        PdfPCell cell = new PdfPCell(new Phrase(value));
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        cell.setPaddingRight(5);
+        table.addCell(cell);
     }
 }
 

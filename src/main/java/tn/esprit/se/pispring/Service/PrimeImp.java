@@ -14,6 +14,7 @@ import java.time.Year;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -21,6 +22,7 @@ import java.util.Locale;
 public class PrimeImp implements PrimeService {
     PrimeRepository primeRepository;
     UserRepository userRepository;
+    NoteService noteService;
     @Override
     public List<Prime> retrieveAllPrimes() {
         return primeRepository.findAll();
@@ -78,13 +80,35 @@ public class PrimeImp implements PrimeService {
         for (User user : users
         ) {
             Prime prime = new Prime();
-        prime.setPrime_month(monthName);
-        prime.setPrime_year(year);
-        prime.setUser(user);
-        prime.setPrime_designation(designation);
-        prime.setValue_amount(amount);
-        primeRepository.save(prime);
-        log.info("############# Cron tab job ####################");
+            prime.setPrime_month(monthName);
+            prime.setPrime_year(year);
+            prime.setUser(user);
+            prime.setPrime_designation(designation);
+            prime.setValue_amount(amount);
+            primeRepository.save(prime);
+            log.info("############# Cron tab job ####################");
+        }
     }
-}
+
+    //@Scheduled(cron = "*/20 * * * * *")
+    public void primeByNotePerfermance(){
+        Map<User, Long> notes = noteService.countUserOccurrencesForNote1();
+        String monthName = LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        int year = Year.now().getValue();
+        String designation = "Performance prime";
+        notes.forEach((k,v) -> {
+            System.out.println("User "+k.getFirstName()+" "+k.getLastName()+" "+k.getId());
+            System.out.println("Note "+v);
+            User user = userRepository.findById(k.getId()).get();
+            Prime prime = new Prime();
+            long amount = k.getSalaire()*v;
+            prime.setPrime_month(monthName);
+            prime.setPrime_year(year);
+            prime.setPrime_designation(designation);
+            prime.setValue_amount((float)amount);
+            prime.setUser(user);
+            primeRepository.save(prime);
+        });
+    }
+
     }

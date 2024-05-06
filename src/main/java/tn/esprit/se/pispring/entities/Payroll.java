@@ -4,6 +4,8 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
+import java.math.BigInteger;
+
 @Builder
 @Getter
 @Setter
@@ -26,7 +28,7 @@ public class Payroll {
     private Float net_salary;
     private Integer work_hours_number;
     private String bank_name;
-    private Long account_number;
+    private BigInteger account_number;
     @Enumerated(EnumType.STRING)
     private PaymentMethod payment_method;
     @ManyToOne
