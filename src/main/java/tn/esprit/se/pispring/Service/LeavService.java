@@ -98,27 +98,32 @@ public class LeavService implements ILeavService {
         try {
             Leav leav = leavRepository.findById(leaveId).orElse(null);
 
-            Integer leaveDurationInDays = calculateLeaveDurationInDays(leav.getLeaveStartdate(), leav.getLeaveEnddate());
+            if (leav == null) {
+                throw new EntityNotFoundException("Leave not found with ID: " + leaveId);
+            }
 
+            // Calculate leave duration in days
+            int leaveDurationInDays = calculateLeaveDurationInDays(leav.getLeaveStartdate(), leav.getLeaveEnddate());
+
+            // Check if leave duration exceeds available leave days left
             if (leav.getLeaveDaysLeft() < leaveDurationInDays) {
                 throw new IllegalArgumentException("Leave duration exceeds available leave days left.");
             }
 
+            // Update leave status and approval
             leav.setLeaveStatus(LeaveStatus.APPROVED);
             leav.setLeaveApproved(true);
 
             return leavRepository.save(leav);
         } catch (EntityNotFoundException | IllegalArgumentException e) {
-            log.error("Failed to accept leave request. " + e.getMessage());
             throw e;
         } catch (Exception e) {
-            log.error("Failed to accept leave request.", e);
             throw new RuntimeException("Failed to accept leave request.", e);
         }
     }
 
-
-    private int calculateLeaveDurationInDays(Date leaveStartDate, Date leaveEndDate) {
+    @Override
+    public int calculateLeaveDurationInDays(Date leaveStartDate, Date leaveEndDate) {
         if (leaveStartDate == null || leaveEndDate == null) {
             throw new IllegalArgumentException("Leave start date or end date cannot be null.");
         }
@@ -139,16 +144,21 @@ public class LeavService implements ILeavService {
         Leav leav = leavRepository.findById(leaveId)
                 .orElseThrow(() -> new EntityNotFoundException("Leave not found with ID: " + leaveId));
 
+        // Calculate leave duration in days
         int leaveDurationInDays = calculateLeaveDurationInDays(leav.getLeaveStartdate(), leav.getLeaveEnddate());
 
+        // Check if leave duration exceeds available leave days left
         if (leav.getLeaveDaysLeft() < leaveDurationInDays) {
             throw new IllegalArgumentException("Leave duration exceeds available leave days left.");
         }
 
+        // Update leave status and approval
         leav.setLeaveStatus(LeaveStatus.REFUSED);
         leav.setLeaveApproved(false);
+
         return leavRepository.save(leav);
     }
+
 
 
     public List<Notification> getNotifications() {

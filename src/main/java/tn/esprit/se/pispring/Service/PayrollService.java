@@ -12,6 +12,7 @@ public interface PayrollService {
     List<PayrollDTO> retrieveAllPayrolls();
     Set<PayrollDTO> getPayrollsByUser(Long userId);
     public String getPayrollUser(Long idpayroll);
+    List<Payroll> getPayrollByYearAndMonth(int year, String month);
 
     Payroll addPayroll(Payroll payroll);
 

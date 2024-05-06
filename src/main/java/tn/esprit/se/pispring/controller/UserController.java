@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @GetMapping("/getCurrent")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN', 'ROLE_HRE')")
     public ResponseEntity<?> getCurrentUserInfos(@RequestHeader(name = "Authorization") String token) throws Exception {
         try {
             log.error(token);
@@ -194,15 +194,16 @@ public class UserController {
         return userService.retrieveUser(id);
     }
 
-
     @GetMapping("/retrieve-all-users")
     public List<User> getAllUsers() {
         List<User> listUsers = userService.getAllUsers();
         return listUsers;
     }
+
     @GetMapping("/getIdByEmail/{email}")
     public ResponseEntity<Long> getUserIdByEmail(@PathVariable String email) {
         Long userId = userRepo.getUserIdByEmail(email);
         return ResponseEntity.ok(userId);
     }
+
 }

@@ -27,4 +27,19 @@ public interface IRecruitmentService {
     Map<String, Integer> getOpenPositionsByLocation();
 
     Map<String, Map<RecruitmentStatus, Integer>> analyzeRecruitmentTrend(int startYear, int endYear);
+
+    Map<String, Map<String, Integer>> analyzePostTitleTrend(String postTitle, int startYear, int endYear);
+
+    Map<String, Integer> analyzeRecruitmentCandidateRelation();
+
+    void assignCandidateToRecruitment(Long idCandidate, Long offerId);
+
+    Optional<Recruitment> getRecruitmentByPostTitle(String postTitle);
+
+    // Méthode pour calculer le pourcentage de correspondance entre l'expérience requise et l'expérience du candidat
+    double calculateExperienceMatch(int experienceRequired, int experienceCand);
+
+    int getExperienceRequired(Long offerId);
+
+    int getExperience(Long idCandidate);
 }

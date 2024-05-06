@@ -13,4 +13,7 @@ public interface ICandidateService {
 
     List<Candidate> retrieveAllCandidates();
 
+    void assignRecruitmentToCandidate(Long candidateId, Long offerId);
+
+    int countCandidatesByRecruitmentOfferId(Long offerId);
 }

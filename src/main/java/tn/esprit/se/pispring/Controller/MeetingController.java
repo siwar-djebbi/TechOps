@@ -13,7 +13,9 @@ import tn.esprit.se.pispring.entities.Consultant;
 import tn.esprit.se.pispring.entities.Meeting;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -90,14 +92,14 @@ public class MeetingController {
         Meeting newMeeting = meetService.planifierMeeting(meeting, consultantId,userId);
         return ResponseEntity.ok(newMeeting);
     }
-    @GetMapping("/count/{consultantId}/{dateBegin}/{dateEnd}")
+  /*  @GetMapping("/count/{consultantId}/{dateBegin}/{dateEnd}")
     public Map<LocalDate, Long> countMeetingsByDateAndConsultantId(
             @PathVariable Long consultantId,
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateBegin,
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateEnd) {
 
         return meetService.countMeetingsByDateAndConsultantId(consultantId, dateBegin, dateEnd);
-    }
+    }*/
 
  @GetMapping("/meetings/{consultantId}")
  public List<Meeting> getMeetingsByConsultantId(@PathVariable Long consultantId) {
@@ -110,5 +112,16 @@ public class MeetingController {
     @GetMapping("/meeeets/{userId}")
     public List<Meeting> meetingsPourUser(@PathVariable Long userId) {
         return  meetService.meetingsPourUser(userId);
+    }
+
+    /*@GetMapping("/meetingstats/{consultantId}")
+    public Map<String, Map<String, Long>> calculateStatisticsForMonth(@PathVariable Long consultantId) {
+        return meetService.calculateStatisticsForMonth(consultantId);
+    }*/
+
+
+    @GetMapping("/statss/{consultantId}")
+    public Map<String, Map<String, Integer>> getMonthlyMeetingStats(@PathVariable Long consultantId) {
+        return meetService.calculateMonthlyMeetingStats(consultantId);
     }
 }
