@@ -20,11 +20,15 @@ public class Candidate {
     private String lastNameCand;
     private String emailCand;
     private String skillsCand;
-    private String experienceCand;
+    private int experienceCand;
     private String education;
+    private String postTitleC;
     @Lob
     private byte[] cv; // Byte array to store the file content
 
     private String cvFileName; // Name of the CV file
+    @ManyToOne
+    @JoinColumn(name = "offerId", referencedColumnName = "offerId")
+    private Recruitment recruitment;
 
 }

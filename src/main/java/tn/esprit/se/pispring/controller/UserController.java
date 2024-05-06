@@ -194,7 +194,11 @@ public class UserController {
         return userService.retrieveUser(id);
     }
 
-
+    @GetMapping("/retrieve-all-users")
+    public List<User> getAllUsers() {
+        List<User> listUsers = userService.getAllUsers();
+        return listUsers;
+    }
 
 
 }

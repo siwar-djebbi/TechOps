@@ -18,6 +18,8 @@ public interface ILeavService {
     Leav assignLeavToUser(Long leavId, Long id);
     Leav acceptLeaveRequest(Long leaveId);
 
+    int calculateLeaveDurationInDays(Date leaveStartDate, Date leaveEndDate);
+
     Leav refuseLeaveRequest(Long leaveId);
 
     List<Notification> getNotifications();
