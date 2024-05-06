@@ -15,4 +15,6 @@ public class CurrentUserResponse {
     private String lastName;
     private String email;
     private List<String> role;
+    private String profilePhoto;
+
 }

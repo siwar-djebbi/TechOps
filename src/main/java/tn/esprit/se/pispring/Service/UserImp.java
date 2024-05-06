@@ -144,7 +144,8 @@ public class UserImp implements UserService {
                     user.getFirstName(),
                     user.getLastName(),
                     user.getEmail(),
-                    user.getRoles().stream().map(role ->  role.getRoleName().toString()).toList()
+                    user.getRoles().stream().map(role ->  role.getRoleName().toString()).toList(),
+                    user.getProfilePhoto()
             );
         }catch (Exception e) {
             throw new Exception(e);
@@ -168,7 +169,8 @@ public class UserImp implements UserService {
                     savedUser.getFirstName(),
                     savedUser.getLastName(),
                     savedUser.getEmail(),
-                    savedUser.getRoles().stream().map(role ->  role.getRoleName().toString()).toList()
+                    savedUser.getRoles().stream().map(role ->  role.getRoleName().toString()).toList(),
+                    savedUser.getProfilePhoto()
             );
         }catch (Exception e) {
             throw new Exception(e);
@@ -178,7 +180,8 @@ public class UserImp implements UserService {
     @Override
     public String editPassword(String token, EditPasswordRequest request) throws Exception {
         try {
-            if (!request.getNewPassword().equals(request.getRetypedNewPassword())) {
+//
+            if (!request.getNewPassword().trim().equals(request.getRetypedNewPassword().trim())) {
                 throw new Exception("passwords don't match");
             }
             User user = userRepository.findByEmail(jwtUtils.getUsernameFromToken(token.split(" ")[1].trim()));

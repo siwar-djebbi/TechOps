@@ -33,9 +33,7 @@ public class User {
     private Boolean connected = false;
     private boolean deleted = false;
     private boolean enabled= true;
-
-    @Lob
-    private byte[] profilePhoto;
+    private String profilePhoto;
 
     @ManyToMany(fetch = EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns  = @JoinColumn(name = "role_id"))
