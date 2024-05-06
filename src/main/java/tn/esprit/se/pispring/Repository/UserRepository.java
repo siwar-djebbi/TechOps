@@ -34,6 +34,9 @@ public interface UserRepository extends JpaRepository<User,Long> {
             " and u.deleted = false")
     List<User> searchUsers(String keyword);
 
-    @Query("select u from User u where ( u.firstName like concat(:searchTerm, '%') or u.lastName like concat(:searchTerm, '%') or u.email like concat(:searchTerm, '%') or u.telephone like concat(:searchTerm, '%'))")
+    @Query("select u from User u where ( u.firstName like concat(:searchTerm, '%') or u.lastName like concat(:searchTerm, '%') or u.email like concat(:searchTerm, '%') )")
     Page<User> searchBy(PageRequest pageRequest, String searchTerm);
+
+    long countByEnabledFalse();
+
 }

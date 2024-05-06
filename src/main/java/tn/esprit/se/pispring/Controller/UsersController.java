@@ -73,6 +73,14 @@ public class UsersController {
         return ResponseEntity.ok("User with email " + email + " has been banned.");
     }
 
+    @GetMapping("/stats/banned-users")
+    public ResponseEntity<Long> getBannedUsersStats() {
+        // Get the total number of banned users
+        long totalBannedUsers = userService.getTotalBannedUsers();
+
+        // Return the total number of banned users as a response
+        return ResponseEntity.ok(totalBannedUsers);
+    }
 
 
 
