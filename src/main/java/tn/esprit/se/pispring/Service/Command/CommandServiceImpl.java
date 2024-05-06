@@ -68,13 +68,13 @@ public class CommandServiceImpl implements ICommandService{
         return commandRepository.findByCommandPayment(payment);
     }
 
-    @Override
+    @Override //ok
     public List<Command> findCommandsBetweenDates(Date start, Date end) {
         return commandRepository.findAllByDateCommandBetween(start, end);
     }
 
     //calculer le chiffre d'affaires total pour un mois donné
-   @Override
+    @Override
     public Double calculateMonthlySalesAmount(int year, int month) {
         // Définir le début et la fin du mois
         LocalDate startOfMonth = LocalDate.of(year, month, 1);
@@ -89,6 +89,5 @@ public class CommandServiceImpl implements ICommandService{
                 .mapToDouble(command -> command.getCart().getCartAmount())
                 .sum();
     }
-
 
 }

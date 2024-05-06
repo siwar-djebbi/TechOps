@@ -22,7 +22,6 @@ public class Review {
     private Long reviewId;
     private String reviewTitle;
     private String reviewText;
-    private boolean verified;
     private float rating;
 
     @ManyToOne

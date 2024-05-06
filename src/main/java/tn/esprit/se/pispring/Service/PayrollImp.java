@@ -32,20 +32,21 @@ public class PayrollImp implements PayrollService {
         List<PayrollDTO> payrollDTOList = new ArrayList<>();
         for (Payroll payroll: payrollList
              ) {
-            PayrollDTO payrollDTO = new PayrollDTO();
-            payrollDTO.setPayroll_id(payroll.getPayroll_id());
-            payrollDTO.setNet_salary(payroll.getNet_salary());
-            payrollDTO.setMonth(payroll.getMonth());
-            payrollDTO.setCategory(payroll.getCategory());
-            payrollDTO.setSeniority(payroll.getSeniority());
-            payrollDTO.setYear(payroll.getYear());
-            payrollDTO.setBank_name(payroll.getBank_name());
-            payrollDTO.setAccount_number(payroll.getAccount_number());
-            payrollDTO.setBase_salary(payroll.getBase_salary());
-            payrollDTO.setPayment_method(payroll.getPayment_method());
-            payrollDTO.setBrut_salary(payroll.getBrut_salary());
-            payrollDTO.setWork_hours_number(payroll.getWork_hours_number());
-            payrollDTO.setUser_name(payroll.getUser().getFirstName()+" "+payroll.getUser().getLastName());
+            PayrollDTO payrollDTO = PayrollDTO.builder()
+                    .payroll_id(payroll.getPayroll_id())
+                    .net_salary(payroll.getNet_salary())
+                    .month(payroll.getMonth())
+                    .category(payroll.getCategory())
+                    .seniority(payroll.getSeniority())
+                    .year(payroll.getYear())
+                    .bank_name(payroll.getBank_name())
+                    .account_number(payroll.getAccount_number())
+                    .base_salary(payroll.getBase_salary())
+                    .payment_method(payroll.getPayment_method())
+                    .brut_salary(payroll.getBrut_salary())
+                    .work_hours_number(payroll.getWork_hours_number())
+                    .user_name(payroll.getUser().getFirstName()+" "+payroll.getUser().getLastName())
+                            .build();
             payrollDTOList.add(payrollDTO);
         }
         return payrollDTOList;
@@ -58,20 +59,21 @@ public class PayrollImp implements PayrollService {
         Set<PayrollDTO> payrollDTOList = new HashSet<>();
         for (Payroll payroll: payrollSet
         ) {
-            PayrollDTO payrollDTO = new PayrollDTO();
-            payrollDTO.setPayroll_id(payroll.getPayroll_id());
-            payrollDTO.setNet_salary(payroll.getNet_salary());
-            payrollDTO.setMonth(payroll.getMonth());
-            payrollDTO.setCategory(payroll.getCategory());
-            payrollDTO.setSeniority(payroll.getSeniority());
-            payrollDTO.setYear(payroll.getYear());
-            payrollDTO.setBank_name(payroll.getBank_name());
-            payrollDTO.setAccount_number(payroll.getAccount_number());
-            payrollDTO.setBase_salary(payroll.getBase_salary());
-            payrollDTO.setPayment_method(payroll.getPayment_method());
-            payrollDTO.setBrut_salary(payroll.getBrut_salary());
-            payrollDTO.setWork_hours_number(payroll.getWork_hours_number());
-            payrollDTO.setUser_name(payroll.getUser().getFirstName()+" "+payroll.getUser().getLastName());
+            PayrollDTO payrollDTO = PayrollDTO.builder()
+                    .payroll_id(payroll.getPayroll_id())
+                    .net_salary(payroll.getNet_salary())
+                    .month(payroll.getMonth())
+                    .category(payroll.getCategory())
+                    .seniority(payroll.getSeniority())
+                    .year(payroll.getYear())
+                    .bank_name(payroll.getBank_name())
+                    .account_number(payroll.getAccount_number())
+                    .base_salary(payroll.getBase_salary())
+                    .payment_method(payroll.getPayment_method())
+                    .brut_salary(payroll.getBrut_salary())
+                    .work_hours_number(payroll.getWork_hours_number())
+                    .user_name(payroll.getUser().getFirstName()+" "+payroll.getUser().getLastName())
+                    .build();
             payrollDTOList.add(payrollDTO);
         }
         return payrollDTOList;
@@ -84,9 +86,13 @@ public class PayrollImp implements PayrollService {
     }
 
     @Override
+    public List<Payroll> getPayrollByYearAndMonth(int year, String month) {
+        List<Payroll> payrolls = payrollRepository.findByPayrollDateYearAndPayrollDateMonth(year, month);
+        return payrolls;
+    }
+
+    @Override
     public Payroll addPayroll(Payroll payroll) {
-        //Double netSalary = calculateNetSalary(payroll.getBrut_salary(), payroll.getWork_hours_number());
-        //payroll.setNet_salary(netSalary.floatValue());
         return payrollRepository.save(payroll);
     }
     @Override
@@ -143,6 +149,7 @@ public class PayrollImp implements PayrollService {
         Float contrib = contributionService.getSumAmountForUserMonthYear(userId,payroll.getMonth(), payroll.getYear());
         Double netSalary = calculateNetSalary(payroll.getBrut_salary(),payroll.getWork_hours_number(),prime, contrib);
         payroll.setNet_salary(netSalary.floatValue());
+        payroll.setBase_salary(Float.valueOf(user.getSalaire()));
         payroll.setUser(user);
         payrollRepository.save(payroll);
         return payroll;

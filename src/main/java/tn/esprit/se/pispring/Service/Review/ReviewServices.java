@@ -10,11 +10,11 @@ import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.entities.Product;
 import tn.esprit.se.pispring.entities.Rating.LikeDislike;
 import tn.esprit.se.pispring.entities.Rating.ProductRating;
+import tn.esprit.se.pispring.entities.Rating.Review;
 import tn.esprit.se.pispring.entities.User;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -83,4 +83,37 @@ public class ReviewServices implements IReviewServices{
         }
         return  dislikes;
     }
+
+
+    @Override
+    @Transactional
+    public Review addReviewToProduct(Long userId, Long productId, Review review){
+        User user=userRepository.findById(userId).get();
+        Product product=productRepository.findById(productId).get();
+        review.setUser(user);
+        review.setProduct(product);
+        reviewRepository.save(review);
+        productRepository.save(product);
+        userRepository.save(user);
+        return review;
+    }
+    @Override
+    @Transactional //okk
+    public void deleteReviewsByProductId(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
+
+        List<Review> reviews = reviewRepository.findByProduct(product);
+        reviewRepository.deleteAll(reviews);
+    }
+
+
+    @Override
+    public List<Review> getReviewsByProductId(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
+
+        return reviewRepository.findByProduct(product);
+    }
+
 }

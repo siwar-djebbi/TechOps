@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import tn.esprit.se.pispring.Repository.CommandRepository;
 import tn.esprit.se.pispring.Service.Command.CommandServiceImpl;
 import tn.esprit.se.pispring.entities.Command;
+import tn.esprit.se.pispring.entities.CommandPayment;
+import tn.esprit.se.pispring.entities.CommandStatus;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -39,7 +42,7 @@ public class CommandController {
     public Command updateCommand(@RequestBody Command command){
         return commandService.update(command);
     }
-
+    //OK
     @DeleteMapping("/deleteCommande/{commandId}")
     public void deleteCommand(@PathVariable("commandId") Long commandId){
         commandService.delete(commandId);
@@ -50,12 +53,34 @@ public class CommandController {
         return ResponseEntity.ok(updatedCommand);
     }
 
-    @GetMapping("/sales")
+    @GetMapping("/sales/{date}")
     public ResponseEntity<Double> getMonthlySalesAmount(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+            @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         int year = date.getYear();
         int month = date.getMonthValue();
         Double salesAmount = commandService.calculateMonthlySalesAmount(year, month);
         return ResponseEntity.ok(salesAmount);
+    }
+    //OK
+    @GetMapping("/commands/between-dates/{start}/{end}")
+    public ResponseEntity<List<Command>> findCommandsBetweenDates(
+            @PathVariable("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start,
+            @PathVariable("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date end) {
+
+        List<Command> commands = commandService.findCommandsBetweenDates(start, end);
+
+        return ResponseEntity.ok(commands);
+    }
+
+    @GetMapping("/by-status/{status}")
+    public ResponseEntity<List<Command>> findCommandsByStatus(@PathVariable CommandStatus status) {
+        List<Command> commands = commandService.findCommandsByStatus(status);
+        return ResponseEntity.ok(commands);
+    }
+
+    @GetMapping("/by-payment/{payment}")
+    public ResponseEntity<List<Command>> findCommandsByPaymentMethod(@PathVariable CommandPayment payment) {
+        List<Command> commands = commandService.findCommandsByPaymentMethod(payment);
+        return ResponseEntity.ok(commands);
     }
 }

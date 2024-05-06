@@ -43,9 +43,19 @@ public class Product {
     @JsonIgnore
     @OneToMany(mappedBy = "product")
     List<LikeDislike> likeDislikeProducts;
-
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "product")
     List<Review> reviews;
+
+    /////////////////////////////////
+    // Relation avec Production
+    @ManyToOne
+    @JoinColumn(name = "production_id")
+    private Production production;
+    //relation avec MvtStock
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "product")
+    private List<MouvementStock> mouvementsStock;
+
 }
 
