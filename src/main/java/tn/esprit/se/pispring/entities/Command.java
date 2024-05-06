@@ -29,7 +29,9 @@ public class Command {
     @ManyToOne
     @JsonIgnore
     User user;
+
     @OneToOne(mappedBy="command")
+    @JsonIgnore
     private Cart cart;
 
 }

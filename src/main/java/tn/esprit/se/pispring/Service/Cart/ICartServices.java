@@ -10,6 +10,22 @@ public interface ICartServices {
 
 //    Cart addToCart(Long cartId, Long productId, Long quantity);
 
+    //    @Override  //temchi
+    //    public void addProductToCart(Long cartId, Long productId, Long quantity) {
+    //    Cart cart = cartRepository.findById(cartId)
+    //            .orElseThrow(() -> new RuntimeException("Cart not found with id " + cartId));
+    //    Product product = productRepository.findById(productId)
+    //            .orElseThrow(() -> new RuntimeException("Product not found with id " + productId));
+    //    CartItem cartItem = new CartItem();
+    //    cartItem.setCart(cart);
+    //    cartItem.setProduct(product);
+    //    cartItem.setQuantity(quantity);
+    //    cart.setDateLastItem(new Date());
+    //    cartRepository.save(cart);
+    //    cartItemRepository.save(cartItem);
+    //}
+    Cart addCart(Cart cart);
+
     //    @Override
     //    public Cart addToCart(Long cartId, Long productId, Long quantity) {
     //        Cart cart = cartRepository.findById(cartId)

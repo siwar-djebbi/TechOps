@@ -6,10 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tn.esprit.se.pispring.Repository.CartRepository;
 import tn.esprit.se.pispring.Repository.CommandRepository;
-import tn.esprit.se.pispring.entities.Cart;
-import tn.esprit.se.pispring.entities.Command;
-import tn.esprit.se.pispring.entities.CommandPayment;
-import tn.esprit.se.pispring.entities.CommandStatus;
+import tn.esprit.se.pispring.Repository.UserRepository;
+import tn.esprit.se.pispring.entities.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
@@ -21,6 +19,7 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor
 public class CommandServiceImpl implements ICommandService{
+    private final UserRepository userRepository;
     private final CommandRepository commandRepository;
     private final CartRepository cartRepository;
 
@@ -89,5 +88,32 @@ public class CommandServiceImpl implements ICommandService{
                 .mapToDouble(command -> command.getCart().getCartAmount())
                 .sum();
     }
+
+
+    @Override
+
+    public Command createCommandAndAssignCart(Long cartId, String userEmail) {
+        // Récupérer le panier à partir de l'identifiant du panier
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new RuntimeException("Cart not found with id " + cartId));
+
+        // Récupérer l'utilisateur à partir de son email
+        User user = userRepository.findByEmail(userEmail);
+
+        // Créer une nouvelle commande
+        Command command = new Command();
+        command.setDateCommand(new Date()); // Définir la date de la commande
+        // Autres attributs de la commande
+
+        // Associer l'utilisateur à la commande
+        command.setUser(user);
+
+        // Associer le panier à la commande
+        cart.setCommand(command);
+
+        // Enregistrer la commande en base de données
+        return commandRepository.save(command);
+    }
+
 
 }

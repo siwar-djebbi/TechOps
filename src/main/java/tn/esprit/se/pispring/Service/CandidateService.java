@@ -34,5 +34,7 @@ public class CandidateService implements ICandidateService {
     }
 
 
+    public static class FileStorageService {
+    }
 }
 

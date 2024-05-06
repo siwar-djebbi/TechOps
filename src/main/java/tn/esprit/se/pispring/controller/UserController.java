@@ -195,6 +195,14 @@ public class UserController {
     }
 
 
-
-
+    @GetMapping("/retrieve-all-users")
+    public List<User> getAllUsers() {
+        List<User> listUsers = userService.getAllUsers();
+        return listUsers;
+    }
+    @GetMapping("/getIdByEmail/{email}")
+    public ResponseEntity<Long> getUserIdByEmail(@PathVariable String email) {
+        Long userId = userRepo.getUserIdByEmail(email);
+        return ResponseEntity.ok(userId);
+    }
 }
