@@ -9,11 +9,10 @@ import tn.esprit.se.pispring.entities.Payroll;
 import tn.esprit.se.pispring.entities.User;
 
 import java.util.List;
-import java.util.Optional;
 @Repository
 public interface PayrollRepository extends JpaRepository<Payroll,Long> {
-    @Query("SELECT p.user.firstName,p.user.lastName, p.brut_salary, p.net_salary, p.month, p.year FROM Payroll p WHERE p.year = :year")
-    List<Object[]> getPayrollDetailsForYear(@Param("year") Integer year);
+    @Query("SELECT p FROM Payroll p WHERE p.year = :year AND p.month = :month")
+    List<Payroll> findByPayrollDateYearAndPayrollDateMonth(@Param("year") Integer year, @Param("month") String month);
 
     @Query("SELECT SUM(p.brut_salary) FROM Payroll p WHERE p.year = :year AND p.month = :month")
     Float calculateTotalExpensesByYearAndMonth(@Param("year") Integer year, @Param("month") String month);

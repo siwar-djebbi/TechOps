@@ -5,6 +5,8 @@ import tn.esprit.se.pispring.entities.PaymentMethod;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.math.BigInteger;
+
 @Builder
 @Getter
 @Setter
@@ -21,7 +23,7 @@ public class PayrollDTO {
     private Float net_salary;
     private Integer work_hours_number;
     private String bank_name;
-    private Long account_number;
+    private BigInteger account_number;
     @Enumerated(EnumType.STRING)
     private PaymentMethod payment_method;
     String user_name;
