@@ -31,7 +31,6 @@ public class ConsultantService implements ConsultantInterface{
     }
     @Override
     public Consultant updateConsultant(Consultant c) {
-       // c.setClientnumber(Long.valueOf(2222222));
         return consultantRepository.save(c);
     }
 
@@ -54,17 +53,34 @@ public class ConsultantService implements ConsultantInterface{
     public void affectPortfolioaConsultant(Long idConsultant, Long idPortfolio) {
 
         Portfolio p = portfilioRepository.findById(idPortfolio).orElseThrow(() -> new IllegalArgumentException("Portfolio with id " + idPortfolio + " not found"));
-         Consultant c = consultantRepository.findById(idConsultant).orElseThrow(() -> new IllegalArgumentException("Consultant with id " + idConsultant + " not found"));
+        Consultant c = consultantRepository.findById(idConsultant).orElseThrow(() -> new IllegalArgumentException("Consultant with id " + idConsultant + " not found"));
 
         // Vérifier que la date de création du portefeuille est après la date d'embauche du consultant
         if (p.getCreation_date().after(c.getHireDate())) {
-            // Affecter le portefeuille au consultant
             c.setPortfolio(p);
             consultantRepository.save(c);
         } else {
             throw new IllegalArgumentException("Portfolio creation date must be after consultant hire date");
         }
     }
+    /*public void affectPortfolioaConsultant(Long idConsultant, Long idPortfolio) {
+        Portfolio portfolio = portfilioRepository.findById(idPortfolio)
+                .orElseThrow(() -> new IllegalArgumentException("Portfolio with id " + idPortfolio + " not found"));
+        Consultant consultant = consultantRepository.findById(idConsultant)
+                .orElseThrow(() -> new IllegalArgumentException("Consultant with id " + idConsultant + " not found"));
+
+        // Vérifier que la date de création du portefeuille est après la date d'embauche du consultant
+        if (portfolio.getCreation_date().after(consultant.getHireDate())) {
+            Consultant updatedConsultant = Consultant.builder()
+                    .consultant_id(idConsultant)
+                    .portfolio(portfolio)
+                    .build();
+            consultantRepository.save(updatedConsultant);
+        } else {
+            throw new IllegalArgumentException("Portfolio creation date must be after consultant hire date");
+        }
+    }*/
+
 
     @Override
     public Map<String, Integer> countMeetingsPerUser(Long consultantId) {
@@ -116,7 +132,6 @@ public class ConsultantService implements ConsultantInterface{
     public Map<String, Integer> getConsultantsByGender() {
         Map<String, Integer> genderCounts = new HashMap<>();
 
-        // Récupérer tous les consultants depuis la base de données ou un autre emplacement
         List<Consultant> allConsultants = consultantRepository.findAll();
 
         // Compter le nombre de consultants pour chaque genre
@@ -130,7 +145,6 @@ public class ConsultantService implements ConsultantInterface{
             }
         }
 
-        // Ajouter les résultats au map
         genderCounts.put("male", maleCount);
         genderCounts.put("female", femaleCount);
 
@@ -141,10 +155,8 @@ public class ConsultantService implements ConsultantInterface{
     public Map<String, Integer> getConsultantsBySkill() {
         Map<String, Integer> skillCounts = new HashMap<>();
 
-        // Récupérer tous les consultants depuis la base de données ou un autre emplacement
         List<Consultant> allConsultants = consultantRepository.findAll();
 
-        // Compter le nombre de consultants pour chaque genre
         int oneStarCount = 0;
         int twoStarCount = 0;
         int threeStarCount = 0;
@@ -209,7 +221,6 @@ public class ConsultantService implements ConsultantInterface{
                     oneStarConsultants.add(consultant);
                     break;
                 default:
-                    // Ne rien faire pour les autres niveaux de compétence
                     break;
             }
         }
