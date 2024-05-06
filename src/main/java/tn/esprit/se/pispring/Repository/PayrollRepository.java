@@ -23,4 +23,5 @@ public interface PayrollRepository extends JpaRepository<Payroll,Long> {
     List<Object[]> calculateTotalExpensesByYearRange(@Param("startYear") Integer startYear, @Param("endYear") Integer endYear);
 
 
+    List<Payroll> findByUserId(Long id);
 }

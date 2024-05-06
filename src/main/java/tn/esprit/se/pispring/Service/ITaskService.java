@@ -31,6 +31,9 @@ public interface ITaskService {
 
    double calculateProjectBudget(Long projectId);
     List<Task> getCompletedTasksByProject(Long projectId);
+
+    void updateBudgetReel(Long projectId);
+
     double calculateCompletionPercentage(Long projectId);
     Map<TaskStatus, Long> getTaskStatusDistribution(Long projectId);
     Map<TaskStatus, Double> getTaskStatusPercentage(Long projectId);
