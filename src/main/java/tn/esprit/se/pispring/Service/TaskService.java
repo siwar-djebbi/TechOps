@@ -2,17 +2,15 @@ package tn.esprit.se.pispring.Service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import tn.esprit.se.pispring.Repository.ProjectRepository;
-import tn.esprit.se.pispring.Repository.ResourceRepository;
-import tn.esprit.se.pispring.Repository.TaskRepository;
-import tn.esprit.se.pispring.Repository.UserRepository;
+import tn.esprit.se.pispring.Repository.*;
 import tn.esprit.se.pispring.entities.*;
 
 import javax.transaction.Transactional;
 import java.util.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @Slf4j
@@ -22,6 +20,11 @@ public class TaskService implements ITaskService{
     private final ResourceRepository resourcesRepository;
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
+    BudgetRepository budgetRepository;
+    PayrollRepository payrollRepository;
+
+
+    private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
     @Override
     public Task addTask(Task task) {
@@ -79,16 +82,9 @@ public class TaskService implements ITaskService{
         taskRepository.findTasksByProjectProjectId(projectId).forEach(task->users.addAll(task.getUsers()));
         return users;
     }
-   /* public Set<User> getProjectTeam(Long projectId) {
-        Set<User> projectTeam = new HashSet<>();
 
-        List<Task> projectTasks = taskRepository.findByProjectProjectId(projectId);
-        for (Task task : projectTasks) {
-            projectTeam.addAll(task.getUsers());
-        }
 
-        return projectTeam;
-    }*/
+
    @Override
     public List<Task> getCompletedTasksByProject(Long projectId) {
         return taskRepository.findTasksByProjectProjectIdAndTaskStatus(projectId, TaskStatus.COMPLETED);
@@ -107,47 +103,72 @@ public class TaskService implements ITaskService{
         }
         return taskBudget;
     }
-   /* @Override
-    public double calculateProjectBudget(Long projectId) {
-        double totalBudget = 0.0;
-        List<Task> tasks = taskRepository.findByProjectProjectId(projectId);
-        for (Task task : tasks) {
-            Set<User> users = task.getUsers();
-            double taskBudget = calculateTaskBudget(task, users);
-            totalBudget += taskBudget;
-        }
-        return totalBudget;
-    }*/
 
     @Override
     public double calculateProjectBudget(Long projectId) {
-        Project project = projectRepository.findById(projectId).orElse(null);
-        if (project == null) {
-            return 0.0; // Gérer le cas où le projet n'est pas trouvé
+        List<Task> tasks = projectRepository.findTasksWithUsersByProjectId(projectId);
+        if (tasks.isEmpty()) {
+            return 0.0;
         }
 
-        // Calculer la durée du projet en mois
-        int projectDurationInMonths = calculateDurationInMonths(project.getProject_startdate(), project.getProjectEnddate());
+        int projectDurationInMonths = calculateDurationInMonths(tasks.get(0).getProject().getProject_startdate(), tasks.get(0).getProject().getProjectEnddate());
 
-        // Calculer le salaire total de l'équipe pour un mois
-        Set<User> users = getProjectTeam(projectId);
         double teamSalaryCostPerMonth = 0.0;
-        for (User user : users) {
-            teamSalaryCostPerMonth += user.getSalaire();
-           // user.getPayrolls();
+        for (Task task : tasks) {
+            for (User user : task.getUsers()) {
+                List<Payroll> payrolls = payrollRepository.findByUserId(user.getId());
+                for (Payroll payroll : payrolls) {
+                    teamSalaryCostPerMonth += payroll.getNet_salary();
+                }
+            }
         }
 
-        // Calculer le budget total en multipliant le salaire total par la durée du projet en mois
         double totalBudget = teamSalaryCostPerMonth * projectDurationInMonths;
 
-        // Ajouter les coûts fixes des ressources si nécessaire
-        double totalResourceCost = 0;
-        //double totalResourceCost = iResourceService.calculateTotalCostForProject(projectId);
-
-        totalBudget += totalResourceCost;
+        List<Resources> resources = projectRepository.getResourcesForProject(projectId);
+        Double totalCost = 0.0;
+        for (Resources resource : resources) {
+            totalCost += resource.getResourcesCost();
+        }
+        totalBudget += totalCost;
 
         return totalBudget;
     }
+
+    @Scheduled(cron = "0 0 0 1 * ?") // Exécuter à minuit (00:00:00) le premier jour de chaque mois
+    public void updateRealBudgets() {
+        List<Budget> budgets = budgetRepository.findAll(); // Récupérer tous les budgets
+        for (Budget budget : budgets) {
+            Long projectId = budget.getProject().getProjectId();
+              updateBudgetReel(projectId);
+        }
+    }
+    @Override
+    public void updateBudgetReel(Long projectId) {
+        try {
+            logger.debug("Début de la mise à jour du budget réel pour le projet {}", projectId);
+
+            Double budgetReel = calculateProjectBudget(projectId);
+            logger.debug("Budget réel calculé pour le projet {}: {}", projectId, budgetReel);
+
+            Budget budget = budgetRepository.findByProject_ProjectId(projectId);
+            if (budget != null) {
+                logger.debug("Budget trouvé pour le projet {}", projectId);
+                budget.setBudgetReel(budgetReel);
+                budgetRepository.save(budget);
+                logger.info("Budget réel mis à jour avec succès pour le projet {}", projectId);
+            } else {
+                logger.error("Budget introuvable pour le projet {}", projectId);
+                throw new RuntimeException("Budget introuvable pour le projet " + projectId);
+            }
+        } catch (Exception e) {
+            logger.error("Erreur lors de la mise à jour du budget réel pour le projet {}", projectId, e);
+            throw new RuntimeException("Erreur lors de la mise à jour du budget réel pour le projet " + projectId, e);
+        }
+    }
+
+
+
     private int calculateDurationInMonths(Date startDate, Date endDate) {
         Calendar startCal = Calendar.getInstance();
         startCal.setTime(startDate);
@@ -226,59 +247,5 @@ public class TaskService implements ITaskService{
 
         return task;
     }
-///////////////
-    /// @Override
-    //    public double calculateCompletionPercentage(Long projectId) {
-    //        List<Task> tasks = taskRepository.findTasksByProjectProjectId(projectId);
-    //        if (tasks.isEmpty()) {
-    //            return 0.0;
-    //        }
-    //        long completedTasks = tasks.stream().filter(task -> task.getTaskStatus() == TaskStatus.COMPLETED).count();
-    //        return ((double) completedTasks / tasks.size()) * 100;
-    //    }
-    //}
 
-
-
-
-    ///////////
-    // public double calculateActualCostForTask(Long taskId) {
-
-    //        Task task = taskRepository.findById(taskId).orElse(null);
-    //        if (task == null) {
-    //            return 0.0;
-    //        }
-    //
-    //        double totalCost = 0.0;
-    //        for (User user : task.getUsers()) {
-    //            // Supposons que chaque utilisateur a un taux horaire associé
-    //            double hourlyRate = user.getHourlyRate();
-    //            // Supposons que les heures travaillées par chaque utilisateur sont suivies
-    //            double hoursWorked = user.getHoursWorkedOnTask(taskId);
-    //            totalCost += hourlyRate * hoursWorked;
-    //        }
-    //
-    //        // Ajoutez d'autres coûts fixes si nécessaire
-    //        totalCost += task.getFixedCosts();
-    //
-    //        return totalCost;
-    //    }
-    //public double getHoursWorkedOnTask(Long taskId) {
-        // Récupérer la tâche spécifique à partir de son identifiant
-       // Task task = taskRepository.findById(taskId).orElse(null);
-
-        //double totalHoursWorked = 0.0;
-
-        // Vérifier si la tâche existe et si elle a des utilisateurs associés
-        //if (task != null && task.getUsers() != null) {
-            // Parcourir les utilisateurs associés à la tâche
-         //   for (User user : task.getUsers()) {
-                // Ajouter les heures travaillées par cet utilisateur sur cette tâche
-              //  totalHoursWorked += user.getHoursWorkedOnTask(taskId);
-           // }
-     //   }
-
-        //return totalHoursWorked;
-    //}
-    ////////
 }

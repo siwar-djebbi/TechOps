@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @CrossOrigin("**")
-@EnableScheduling // Active la planification de tâches
 @SpringBootApplication
 @EnableScheduling
 public class PiSpringApplication {
