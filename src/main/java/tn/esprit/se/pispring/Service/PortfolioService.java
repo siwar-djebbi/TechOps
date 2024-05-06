@@ -62,7 +62,7 @@ public class PortfolioService implements PortfolioInterface{
         Portfolio portfolio = portfilioRepository.findById(portfolioId)
                 .orElseThrow(() -> new IllegalArgumentException("Portfolio with id " + portfolioId + " not found"));
 
-        // Vérifier si l'utilisateur est déjà associé à un portefeuille
+        // Vérifier si l'utilisateur est déjà associé à un portfolio
         if (user.getPortfolio() != null) {
             throw new IllegalArgumentException("User is already assigned to a portfolio");
         }
