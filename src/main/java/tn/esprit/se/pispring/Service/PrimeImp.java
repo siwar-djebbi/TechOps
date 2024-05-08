@@ -90,7 +90,7 @@ public class PrimeImp implements PrimeService {
         }
     }
 
-    //@Scheduled(cron = "*/20 * * * * *")
+    //@Scheduled(cron = "*/7 * * * * *")
     public void primeByNotePerfermance(){
         Map<User, Long> notes = noteService.countUserOccurrencesForNote1();
         String monthName = LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);

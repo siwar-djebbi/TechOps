@@ -3,6 +3,8 @@ package tn.esprit.se.pispring.Service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import tn.esprit.se.pispring.Repository.ProjectRepository;
 import tn.esprit.se.pispring.Repository.ResourceRepository;
@@ -11,6 +13,7 @@ import tn.esprit.se.pispring.Repository.UserRepository;
 import tn.esprit.se.pispring.entities.Project;
 import tn.esprit.se.pispring.entities.ProjectStatus;
 import tn.esprit.se.pispring.entities.Task;
+import tn.esprit.se.pispring.entities.User;
 
 import javax.transaction.Transactional;
 import java.util.Date;
@@ -116,4 +119,33 @@ public List<Project> getProjectsByBudgetId(Long budgetId) {
         }
     }
 
+    @Override
+    public double calculateCompletedFuturePercentage() {
+        List<Project> completedFutureProjects = getCompletedProjects();
+        List<Project> allProjects = getAllProject();
+        if (allProjects.isEmpty()) {
+            return 0.0;
+        } else {
+            return ((double) completedFutureProjects.size() / allProjects.size()) * 100;
+        }
+    }
+
+    @Override
+    public List<Project> getProjectsForCurrentUser() {
+        // Obtenez l'authentification de l'utilisateur actuellement connecté
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Obtenez le nom d'utilisateur de l'utilisateur actuellement connecté
+        String currentUsername = authentication.getName();
+
+        // Recherchez l'utilisateur dans la base de données en utilisant le nom d'utilisateur
+        User currentUser = userRepository.findByEmail(currentUsername);
+
+        // Si l'utilisateur existe, récupérez les projets associés à cet utilisateur
+        if (currentUser != null) {
+            return projectRepository.findByUserEmail(currentUser.getEmail());
+        }
+
+        return null;
+    }
 }

@@ -25,4 +25,8 @@ public interface IProjectService {
     void updateAllProjectEndDates();
 
     Date findLatestTaskEndDate(Project project);
+
+    double calculateCompletedFuturePercentage();
+
+    List<Project> getProjectsForCurrentUser();
 }

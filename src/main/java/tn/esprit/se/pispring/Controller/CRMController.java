@@ -93,5 +93,10 @@ public class CRMController {
         List<Consultant> listConsultants = consultantService.getConsultantsBySkillAndSeniority();
         return listConsultants;
     }
+    @GetMapping("/statistics")
+    public ResponseEntity<Map<String, Map<String, Long>>> getConsultantsStatistics() {
+        Map<String, Map<String, Long>> statistics = consultantService.getStatistiquesMeetings();
+        return ResponseEntity.ok(statistics);
+    }
 
 }

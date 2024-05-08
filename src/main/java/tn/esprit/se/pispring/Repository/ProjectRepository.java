@@ -41,5 +41,6 @@ public interface ProjectRepository extends JpaRepository<Project,Long> {
 
    @Query("SELECT p FROM Project p WHERE p.projectId IN (SELECT b.project.projectId FROM Budget b WHERE b.budget_id = :budgetId)")
    List<Project> findProjectsByBudgetId(@Param("budgetId") Long budgetId);
-
+   @Query("SELECT DISTINCT pr FROM Project pr JOIN pr.Tasks t JOIN t.users u WHERE u.email = :email")
+   List<Project> findByUserEmail(@Param("email") String email);
 }

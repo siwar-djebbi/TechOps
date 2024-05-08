@@ -135,7 +135,7 @@ public class TaskService implements ITaskService{
         return totalBudget;
     }
 
-    @Scheduled(cron = "0 0 0 1 * ?") // Exécuter à minuit (00:00:00) le premier jour de chaque mois
+    @Scheduled(fixedRate = 60000) // Exécuter à minuit (00:00:00) le premier jour de chaque mois
     public void updateRealBudgets() {
         List<Budget> budgets = budgetRepository.findAll(); // Récupérer tous les budgets
         for (Budget budget : budgets) {

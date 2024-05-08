@@ -233,7 +233,23 @@ public class ConsultantService implements ConsultantInterface{
 
         return sortedConsultants;
     }
+    public Map<String, Map<String, Long>> getStatistiquesMeetings() {
+        List<Consultant> consultants = consultantRepository.findAll();
+        Map<String, Map<String, Long>> statistiques = new HashMap<>();
 
+        for (Consultant consultant : consultants) {
+            Map<String, Long> consultantStats = new HashMap<>();
+            consultantStats.put("nbrPassedMeet", consultant.getNbrPassedMeet());
+            consultantStats.put("nbrFirstMeet", consultant.getNbrFirstMeet());
+            consultantStats.put("nbrAffectation", consultant.getNbrAffectation());
+
+            String nomConsultant = consultant.getConsultant_firstname() + " " + consultant.getConsultant_lastname();
+
+            statistiques.put(nomConsultant, consultantStats);
+        }
+
+        return statistiques;
+    }
 
 }
 

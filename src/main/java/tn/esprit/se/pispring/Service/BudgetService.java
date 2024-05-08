@@ -114,7 +114,7 @@ public class BudgetService implements IBudegetService{
         return "[" + intervalLowerBound + "%, " + intervalUpperBound + "%]";
 }
 
-    @Scheduled(fixedRate = 300000) // Exécute toutes les 5 minutes (300 000 millisecondes)
+    @Scheduled(fixedRate = 60000) // Exécute toutes les 5 minutes (300 000 millisecondes)
     public void updateBudgetVariances() {
         // Obtenez tous les budgets
         List<Budget> budgets = budgetRepository.findAll();

@@ -20,14 +20,16 @@ import java.util.stream.Collectors;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/Project")
-public class ProjectController {
+public class
+
+ProjectController {
     @Autowired
     IProjectService iProjectService;
     ITaskService iTaskService;
 
 
     @PostMapping("/addProject")
-    @PreAuthorize("hasAnyRole( 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
+    //@PreAuthorize("hasAnyRole( 'ROLE_HR_ADMIN', 'ROLE_CRM_ADMIN', 'ROLE_PROJECT_ADMIN', 'ROLE_PRODUCT_ADMIN')")
     public Project addProject(@RequestBody Project p) {
         Project project = iProjectService.addProject(p);
         return project;
@@ -121,5 +123,13 @@ public class ProjectController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Une erreur s'est produite lors de la mise à jour des dates de fin des projets.");
         }
     }
-
+    @GetMapping("/current-user")
+    public List<Project> getProjectsForCurrentUser() {
+        return iProjectService.getProjectsForCurrentUser();
+    }
+    @GetMapping("/completed-future-percentage")
+    public ResponseEntity<Double> calculateCompletedFuturePercentage() {
+        double percentage = iProjectService.calculateCompletedFuturePercentage();
+        return ResponseEntity.ok(percentage);
+    }
 }
